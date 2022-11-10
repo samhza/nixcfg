@@ -1,0 +1,40 @@
+[theme]
+name = "native"
+
+[[block]]
+block = "music"
+hide_when_empty = true
+marquee = false
+on_click = "playerctl play-pause"
+dynamic_width = true
+
+[[block]]
+block = "networkmanager"
+
+#[[block]]
+#block = "memory"
+#display_type = "memory"
+#format_mem = "{mem_used_percents:1}"
+
+#[[block]]
+#block = "cpu"
+#interval = 5
+
+#[[block]]
+#block = "load"
+#interval = 5
+#format = "{1m}"
+
+#[[block]]
+#block = "battery"
+#interval = 10
+#format = "{percentage} {time}"
+
+[[block]]
+block = "sound"
+on_click = "pavucontrol"
+
+[[block]]
+block = "time"
+interval = 60
+format = "%a %Y-%m-%d %H:%M"
