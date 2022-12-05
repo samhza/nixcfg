@@ -10,9 +10,43 @@
     ../../profiles/network.nix
     ../../profiles/interactive.nix
     ../../mixins/tailscale.nix
+    ../../mixins/esammy.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
   config = {
+    networking.firewall = {
+      allowedTCPPorts = [ 80 443 ];
+    };
+    age.secrets."cloudflare-samhza-com-creds" = {
+      file = ../../secrets/cloudflare-samhza-com-creds.age;
+      owner = "acme";
+      group = "acme";
+    };
+    security.acme = {
+      acceptTerms = true;
+      defaults.email = "sam@samhza.com";
+      certs."samhza.com" = {
+        dnsProvider = "cloudflare";
+        credentialsFile = config.age.secrets."cloudflare-samhza-com-creds".path;
+      };
+    };
+    users.users.nginx.extraGroups = [ "acme" ];
+    services.nginx = {
+      enable = true;
+      virtualHosts."samhza.com" = {
+          useACMEHost = "samhza.com";
+          forceSSL = true;
+          root = inputs.site.outputs.packages.${pkgs.system}.static;
+          locations."= /" = {
+            return = "200 '<pre>email: sam@samhza.com'";
+            extraConfig = ''
+              add_header Content-Type text/html;
+            '';
+          };
+          locations."/u/".root = "/var/www";
+      };
+    };
+
     boot.cleanTmpDir = true;
     zramSwap.enable = true;
     networking.hostName = "ramiel";

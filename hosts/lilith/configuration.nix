@@ -19,6 +19,8 @@
     ../../mixins/spotify.nix
     ../../mixins/pipewire.nix
     ../../mixins/tailscale.nix
+    ../../mixins/libvirt.nix
+    ../../mixins/libvirtd.nix
 
     inputs.nixos-hardware.nixosModules.common-cpu-amd
     inputs.nixos-hardware.nixosModules.common-cpu-amd-pstate
@@ -28,6 +30,14 @@
   config = {
     networking = {
       hostName = "lilith";
+      /*
+      extraHosts = ''
+        0.0.0.0 discord.com
+        0.0.0.0 reddit.com
+        0.0.0.0 lobste.rs
+        0.0.0.0 wetdry.world
+      '';
+      */
     };
     programs.dconf.enable = true;
     home-manager.users.sam = {pkgs, ...} @ hm: {
@@ -121,15 +131,19 @@
         nix-direnv.enable = true;
       };
       home.packages = with pkgs; [
-        (inputs.jj.outputs.packages.${pkgs.system}.jujutsu)
+        #(inputs.jj.outputs.packages.${pkgs.system}.jujutsu)
+        jujutsu
         go
         gopls
+        gotools
+        rnix-lsp
         delve
         gcc
         gimp
         gdu
         vivaldi
         rustup
+        imv
         openssl
         pkgconfig
         pkg-config
@@ -144,6 +158,10 @@
         rclone
         yt-dlp
         alejandra
+        (pkgs.callPackage ./cgif.nix {})
+        (pkgs.vips.overrideAttrs (old: {
+          nativeBuildInputs = old.nativeBuildInputs ++ [(pkgs.callPackage ./cgif.nix {})];
+        }))
         (pkgs.writeShellApplication {
           name = "code";
           text = "${pkgs.vscode}/bin/code --enable-features=UseOzonePlatform --ozone-platform=wayland \"$@\"";
@@ -158,7 +176,7 @@
         })
         (pkgs.writeShellApplication {
           name = "discord";
-          text = "${(pkgs.discord.override {withOpenASAR = true;})}/bin/discord --use-gl=desktop";
+          text = "${pkgs.discord}/bin/discord --use-gl=desktop";
         })
         (pkgs.makeDesktopItem {
           name = "discord";
@@ -180,21 +198,6 @@
         })
         gomuks
       ];
-    };
-
-    nix = {
-      registry.nixpkgs.flake = inputs.nixpkgs;
-      gc.automatic = true;
-      optimise.automatic = true;
-      settings = {
-        auto-optimise-store = true;
-        sandbox = true;
-        allowed-users = ["@wheel"];
-        trusted-users = ["root" "@wheel"];
-      };
-      extraOptions = ''
-        experimental-features = nix-command flakes
-      '';
     };
 
     nixpkgs.config.allowUnfree = true;

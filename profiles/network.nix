@@ -1,4 +1,4 @@
-{...}: {
+{config, ...}: {
   services = {
     openssh = {
       enable = true;
@@ -34,6 +34,7 @@
         cache_file = "/var/lib/dnscrypt-proxy2/public-resolvers.md";
         minisign_key = "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
       };
+      #server_names = [ "adguard-dns-doh" ];
     };
   };
 
@@ -47,12 +48,13 @@
       allowPing = false;
       trustedInterfaces = ["tailscale0"];
       allowedTCPPorts = [];
-      allowedUDPPorts = [41641 51820];
+      allowedUDPPorts = [41641];
       checkReversePath = "loose";
     };
     networkmanager.enable = true;
     useDHCP = false;
-    nameservers = ["127.0.0.1" "::1"];
+    nameservers = ["100.100.100.100" "127.0.0.1" "::1"];
     networkmanager.dns = "none";
   };
+  services.resolved.fallbackDns = config.networking.nameservers;
 }

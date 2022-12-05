@@ -37,7 +37,7 @@ in {
     grim
     slurp
     wf-recorder
-    font-awesome_6
+    font-awesome
   ];
   config.home-manager.users.sam.services.swayidle = let
     pgrep = "${pkgs.procps}/bin/pgrep";
@@ -80,7 +80,7 @@ in {
     wrapperFeatures.gtk = true;
     config = rec {
       fonts = {
-        names = ["Iosevka"];
+        names = ["Iosevka Comfy Fixed"];
         style = "Regular";
         size = 11.0;
       };
@@ -92,7 +92,7 @@ in {
       bars = [
         {
           fonts = {
-            names = ["Iosevka" "FontAwesome"];
+            names = ["Iosevka Comfy Fixed" "Font Awesome 6 Free"];
             style = "Regular";
             size = 11.0;
           };
@@ -217,9 +217,6 @@ in {
       	bindsym d exec ${pkgs.mako}/bin/makoctl dismiss; mode default
       	bindsym Shift+d exec ${pkgs.mako}/bin/makoctl dismiss -a; mode default
       }
-
-
-      font Iosevka 10
 
       bindsym $mod+p exec passmenu $menu_args
       bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle

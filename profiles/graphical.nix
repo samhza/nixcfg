@@ -23,7 +23,8 @@ in {
         };
       };
       home.packages = with pkgs; [
-        iosevka
+        iosevka-comfy.comfy-fixed
+        iosevka-comfy.comfy-duo
         wl-clipboard
         gnome3.adwaita-icon-theme
         noto-fonts
@@ -51,7 +52,7 @@ in {
         settings = {
           main = {
             term = "xterm-256color";
-            font = "Iosevka:size=12";
+            font = "Iosevka Comfy Fixed:size=12";
             dpi-aware = "yes";
           };
         };
