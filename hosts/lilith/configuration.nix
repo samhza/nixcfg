@@ -7,18 +7,23 @@
   ...
 }: {
   imports = [
-    ../../profiles/core.nix
+    ../../profiles/interactive.nix
     ../../profiles/security.nix
     ../../profiles/network.nix
     ../../profiles/sway
+    ../../profiles/graphical.nix
     ../../mixins/greetd.nix
-    ../../mixins/esammy.nix
     ../../mixins/gfx-nvidia.nix
     ../../mixins/gnupg.nix
     ../../mixins/easyeffects.nix
     ../../mixins/spotify.nix
-    ../../profiles/graphical.nix
     ../../mixins/pipewire.nix
+    ../../mixins/tailscale.nix
+
+    inputs.nixos-hardware.nixosModules.common-cpu-amd
+    inputs.nixos-hardware.nixosModules.common-cpu-amd-pstate
+    inputs.nixos-hardware.nixosModules.common-pc-ssd
+    # inputs.nixos-hardware.nixosModules.common-gpu-nvidia
   ];
   config = {
     networking = {
@@ -26,15 +31,35 @@
     };
     programs.dconf.enable = true;
     home-manager.users.sam = {pkgs, ...} @ hm: {
-      wayland.windowManager.sway.config.output."DP-1".resolution = "1920x1080@166Hz";
-      programs.ssh = {
-        enable = true;
-        matchBlocks.jascha = {
-          hostname = "doorcraft.de";
-          port = 44303;
-        };
-        matchBlocks.dm4.hostname = "balls.dm4uz3.pt";
+      home.sessionVariables = {
+        EDITOR = "nvim";
+        SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
       };
+      home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
+      programs.neovim = {
+        enable = true;
+        plugins =
+        with pkgs.vimPlugins; [
+          ale
+          ctrlp
+          copilot-vim
+        ];
+      };
+      xdg.userDirs = let
+        inherit (config.home-manager.users.sam.home) homeDirectory;
+        inherit (config.home-manager.users.sam.xdg) configHome dataHome;
+      in {
+        enable = true;
+        desktop = "${dataHome}/desktop";
+        documents = "${homeDirectory}/doc";
+        download = "${homeDirectory}/tmp";
+        music = "${homeDirectory}/music";
+        pictures = "${homeDirectory}/images";
+        publicShare = "${homeDirectory}/public";
+        templates = "${configHome}/templates";
+        videos = "${homeDirectory}/videos";
+      };
+      wayland.windowManager.sway.config.output."DP-1".resolution = "1920x1080@166Hz";
       systemd.user.services."logseq-sync" = {
         Unit.Description = "sync logseq ~/knowledge";
         Service = {
@@ -64,9 +89,15 @@
         userName = "samhza";
         userEmail = "sam@samhza.com";
         enable = true;
+        extraConfig.core.excludesfile = "~/.config/git/ignore";
+        ignores = [
+          "flake.nix"
+          "flake.lock"
+          ".direnv"
+          ".envrc"
+        ];
       };
 
-      home.stateVersion = "22.05";
       nixpkgs.config = {allowUnfree = true;};
       xdg.configFile."nixpkgs/config.nix".text = "{ allowUnfree = true; }";
       programs.alacritty.enable = true;
@@ -74,6 +105,8 @@
         enable = true;
         package = pkgs.pass.withExtensions (exts: [exts.pass-otp]);
         settings.PASSWORD_STORE_DIR = "$HOME/secrets/password-store";
+        settings.PASSWORD_STORE_GENERATED_LENGTH = "24";
+        settings.PASSWORD_STORE_CHARACTER_SET = "abcdefghijklmnopqrstuvwxyz";
       };
       programs.browserpass = {
         enable = true;
@@ -83,41 +116,67 @@
         enable = true;
         enableFishIntegration = true;
       };
-      programs.fish = {
-        enable = true;
-        shellAliases = {
-          gc = "git clone";
-          l = "ls -alh";
-          update-flake = "sudo nixos-rebuild switch --flake /flake";
-        };
-      };
       programs.direnv = {
         enable = true;
         nix-direnv.enable = true;
       };
       home.packages = with pkgs; [
-        fd
+        (inputs.jj.outputs.packages.${pkgs.system}.jujutsu)
+        go
+        gopls
+        delve
+        gcc
+        gimp
         gdu
-        ripgrep
+        vivaldi
+        rustup
+        openssl
+        pkgconfig
+        pkg-config
+        git-branchless
+        github-cli
+        ffmpeg
         xdg-utils
-        nano
-        wget
-        curl
         jq
         jo
         openssh
         file
-        rsync
         rclone
         yt-dlp
+        alejandra
+        (pkgs.writeShellApplication {
+          name = "code";
+          text = "${pkgs.vscode}/bin/code --enable-features=UseOzonePlatform --ozone-platform=wayland \"$@\"";
+        })
+        (pkgs.writeShellApplication {
+          name = "jjgit";
+          text = "git --git-dir .jj/repo/store/git \"$@\"";
+        })
+        (pkgs.writeShellApplication {
+          name = "logseq";
+          text = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
+        })
         (pkgs.writeShellApplication {
           name = "discord";
-          text = "${pkgs.discord}/bin/discord --use-gl=desktop";
+          text = "${(pkgs.discord.override {withOpenASAR = true;})}/bin/discord --use-gl=desktop";
         })
         (pkgs.makeDesktopItem {
           name = "discord";
           exec = "discord";
           desktopName = "Discord";
+        })
+        (stdenv.mkDerivation{
+          pname = "spr";
+          version = "0.9.2";
+          src = fetchzip {
+            url = "https://github.com/ejoffe/spr/releases/download/v0.9.2/spr_linux_x86_64.tar.gz";
+            stripRoot = false;
+            sha256 = "sha256-hNNUx7q7VhxMhhkHK5d68jPanYOJMddF9bs4FimD5vY=";
+          };
+          installPhase = ''
+            install -m755 -D git-spr $out/bin/git-spr
+            install -m755 -D spr_reword_helper $out/bin/spr_reword_helper
+          '';
         })
         gomuks
       ];
@@ -141,23 +200,31 @@
     nixpkgs.config.allowUnfree = true;
 
     networking.networkmanager.enable = true;
-    age.secrets."wireguard-key-lilith".file = ../../secrets/wireguard-key-lilith.age;
-    networking.wireguard.interfaces.wg0 = {
-      ips = ["10.0.0.2/32"];
-      privateKeyFile = config.age.secrets."wireguard-key-lilith".path;
-      peers = [
-        {
-          persistentKeepalive = 25;
-          publicKey = "cEBm7V0tVnPJ4GYbOh/vaH4lZ4Km3XpfHzpm0vySim8=";
-          endpoint = "samhza.com:51820";
-          allowedIPs = ["10.0.0.1/32"];
+
+    services.postgresql.enable = true;
+    services.postgresql.authentication = pkgs.lib.mkOverride 10 ''
+      local all all trust
+      hostnossl all all 0.0.0.0/0 trust
+      hostnossl all all ::1/128 trust
+    '';
+
+    services.caddy = {
+      enable = true;
+      extraConfig = ''
+        :80 {
+          @public not remote_ip forwarded 100.64.0.0/10 127.0.0.1/8 ::1
+          handle_path /tmp/* {
+            root * /4tb/tmp
+            file_server
+          }
+          handle /* {
+            respond @public 401
+            root * /
+            file_server browse
+          }
         }
-      ];
+      '';
     };
-
-    time.timeZone = "America/New_York";
-
-    i18n.defaultLocale = "en_US.UTF-8";
 
     services.xserver.videoDrivers = ["nvidia"];
     hardware.pulseaudio.enable = false;
@@ -206,6 +273,10 @@
     fileSystems."/boot/esp" = {
       device = "/dev/disk/by-uuid/41E3-6688";
       fsType = "vfat";
+    };
+    fileSystems."/4tb" = {
+      device = "/dev/disk/by-uuid/1d24154d-270c-4cc7-9c1c-1a7c0d65d238";
+      fsType = "ext4";
     };
 
     swapDevices = [{device = "/dev/disk/by-uuid/72b6d1c6-eb62-492a-99f1-b29850061a00";}];

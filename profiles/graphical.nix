@@ -13,6 +13,8 @@
 in {
   config = {
     home-manager.users.sam = {...}: {
+      services.gnome-keyring.enable = true;
+      fonts.fontconfig.enable = true;
       programs.mpv = {
         enable = true;
         config = {
@@ -38,6 +40,10 @@ in {
           gtk-xft-hintstyle = "slight";
           gtk-xft-antialias = 1; # => font-antialiasing="grayscale"
           gtk-xft-rgba = "rgb"; # => font-rgb-order="rgb"
+        };
+        font = {
+          package = pkgs.noto-fonts;
+          name = "Noto Sans 11";
         };
       };
       programs.foot = {

@@ -10,7 +10,7 @@
   environment.variables.SCUDO_OPTIONS = "ZeroContents=1";
 
   security.lockKernelModules = true;
-  security.protectKernelImage = true;
+  # security.protectKernelImage = true; # interferes with hibernation
   security.allowSimultaneousMultithreading = false;
   security.forcePageTableIsolation = true;
 

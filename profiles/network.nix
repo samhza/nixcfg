@@ -20,8 +20,6 @@
 
   security.pam.enableSSHAgentAuth = true;
 
-  services.opensnitch.enable = true;
-
   services.dnscrypt-proxy2 = {
     enable = true;
     settings = {
@@ -47,9 +45,9 @@
     firewall = {
       enable = true;
       allowPing = false;
-      trustedInterfaces = [];
+      trustedInterfaces = ["tailscale0"];
       allowedTCPPorts = [];
-      allowedUDPPorts = [41641];
+      allowedUDPPorts = [41641 51820];
       checkReversePath = "loose";
     };
     networkmanager.enable = true;

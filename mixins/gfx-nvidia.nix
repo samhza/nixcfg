@@ -6,10 +6,12 @@
 }: let
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta;
-  nvidiaPkg =
+  nvidiaPkg = config.boot.kernelPackages.nvidiaPackages.stable;
+  /*
     if (lib.versionOlder nvBeta.version nvStable.version)
     then config.boot.kernelPackages.nvidiaPackages.stable
     else config.boot.kernelPackages.nvidiaPackages.beta;
+    */
 in {
   config = {
     home-manager.users.sam = {pkgs, ...}: {

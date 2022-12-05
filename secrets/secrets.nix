@@ -8,5 +8,4 @@ in
 {
   "esammy.toml.age".publicKeys = [sam lilith];
   "spotify-password.age".publicKeys = [sam lilith];
-  "wireguard-key-lilith.age".publicKeys = [sam lilith];
 }

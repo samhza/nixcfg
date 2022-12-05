@@ -33,7 +33,12 @@ in {
   config.home-manager.users.sam.xdg.configFile."i3status-rust/config.toml".source = ./i3status-rs.toml;
   config.security.pam.services.swaylock = {};
   config.home-manager.users.sam.programs.mako.enable = true;
-
+  config.home-manager.users.sam.home.packages = with pkgs; [
+    grim
+    slurp
+    wf-recorder
+    font-awesome_6
+  ];
   config.home-manager.users.sam.services.swayidle = let
     pgrep = "${pkgs.procps}/bin/pgrep";
     dpms_check = s:
@@ -87,7 +92,7 @@ in {
       bars = [
         {
           fonts = {
-            names = ["Iosevka"];
+            names = ["Iosevka" "FontAwesome"];
             style = "Regular";
             size = 11.0;
           };
