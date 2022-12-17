@@ -13,7 +13,7 @@
       optimise.automatic = true;
       settings = {
         auto-optimise-store = true;
-        sandbox = true;
+        #sandbox = true;
         allowed-users = ["@wheel"];
         trusted-users = ["root" "@wheel"];
       };

@@ -76,18 +76,16 @@ in {
     ];
   };
   config.home-manager.users.sam.wayland.windowManager.sway = rec {
+    wrapperFeatures = {
+      base = false; # this should be the default (dbus activation, not sure where XDG_CURRENT_DESKTOP comes from)
+      gtk = true; # I think this is also the default...
+    };
     enable = true;
-    wrapperFeatures.gtk = true;
     config = rec {
       fonts = {
         names = ["Iosevka Comfy Fixed"];
         style = "Regular";
         size = 11.0;
-      };
-      output = {
-        "DP-1" = {
-          resolution = "1920x1080@166Hz";
-        };
       };
       bars = [
         {

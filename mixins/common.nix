@@ -19,6 +19,13 @@
           Welcome to my \033[1mDEATH MACHINE\033[0m, interloper!
       '';
     };
+    documentation = {
+      enable = false;
+      doc.enable = false;
+      man.enable = true;
+      info.enable = false;
+      nixos.enable = false;
+    };
   };
 }
 

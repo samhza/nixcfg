@@ -2,7 +2,7 @@
   description = "sam's flake";
 
   inputs = {
-    nixpkgs.url = "github:colemickens/nixpkgs/cmpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
     impermanence.url = "github:nix-community/impermanence";
     nixos-hardware.url = "github:nixos/nixos-hardware";
@@ -37,6 +37,8 @@
     devShells.x86_64-linux.default = pkgs.mkShell {
       buildInputs = [
         inputs.agenix.packages.x86_64-linux.agenix
+        pkgs.nix
+        pkgs.nixos-rebuild
       ];
     };
   };

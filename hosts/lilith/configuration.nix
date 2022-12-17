@@ -69,7 +69,7 @@
         templates = "${configHome}/templates";
         videos = "${homeDirectory}/videos";
       };
-      wayland.windowManager.sway.config.output."DP-1".resolution = "1920x1080@166Hz";
+      wayland.windowManager.sway.config.output."DP-2".resolution = "1920x1080@166Hz";
       systemd.user.services."logseq-sync" = {
         Unit.Description = "sync logseq ~/knowledge";
         Service = {
@@ -288,6 +288,6 @@
     hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
     hardware.video.hidpi.enable = lib.mkDefault true;
 
-    system.stateVersion = "22.05";
+    system.stateVersion = "22.11";
   };
 }
