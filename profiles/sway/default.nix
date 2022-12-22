@@ -29,6 +29,7 @@
       ${pkgs.jq}/bin/jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | \
       ${pkgs.slurp}/bin/slurp
     '';
+  patchedSway = pkgs.callPackage ../../pkgs/sway.nix {};
 in {
   config.home-manager.users.sam.xdg.configFile."i3status-rust/config.toml".source = ./i3status-rs.toml;
   config.security.pam.services.swaylock = {};
@@ -39,17 +40,20 @@ in {
     wf-recorder
     font-awesome
   ];
+  config.home-manager.users.sam.home.sessionVariables = {
+    "NIXOS_OZONE_WL" = "1";
+  };
   config.home-manager.users.sam.services.swayidle = let
     pgrep = "${pkgs.procps}/bin/pgrep";
     dpms_check = s:
       pkgs.writeShellScript "dpms_check_${s}" ''
         set -x
-        if ${pgrep} swaylock; then ${pkgs.sway}/bin/swaymsg 'output * dpms ${s}'; fi
+        if ${pgrep} swaylock; then ${patchedSway}/bin/swaymsg 'output * dpms ${s}'; fi
       '';
     dpms_set = s:
       pkgs.writeShellScript "dpms_set_${s}" ''
         set -x
-        "${pkgs.sway}/bin/swaymsg" 'output * dpms ${s}'
+        "${patchedSway}/bin/swaymsg" 'output * dpms ${s}'
       '';
     fadelock = pkgs.writeShellScript "fadelock.sh" ''
       set -x
@@ -76,11 +80,13 @@ in {
     ];
   };
   config.home-manager.users.sam.wayland.windowManager.sway = rec {
+    enable = true;
+    package = patchedSway;
+    systemdIntegration = true; # beta
     wrapperFeatures = {
       base = false; # this should be the default (dbus activation, not sure where XDG_CURRENT_DESKTOP comes from)
       gtk = true; # I think this is also the default...
     };
-    enable = true;
     config = rec {
       fonts = {
         names = ["Iosevka Comfy Fixed"];

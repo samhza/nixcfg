@@ -12,7 +12,7 @@
     ../../profiles/network.nix
     ../../profiles/sway
     ../../profiles/graphical.nix
-    ../../mixins/greetd.nix
+    #../../mixins/greetd.nix
     ../../mixins/gfx-nvidia.nix
     ../../mixins/gnupg.nix
     ../../mixins/easyeffects.nix
@@ -25,7 +25,6 @@
     inputs.nixos-hardware.nixosModules.common-cpu-amd
     inputs.nixos-hardware.nixosModules.common-cpu-amd-pstate
     inputs.nixos-hardware.nixosModules.common-pc-ssd
-    # inputs.nixos-hardware.nixosModules.common-gpu-nvidia
   ];
   config = {
     networking = {
@@ -42,6 +41,7 @@
     programs.dconf.enable = true;
     home-manager.users.sam = {pkgs, ...} @ hm: {
       home.sessionVariables = {
+        IDK = "${pkgs.callPackage ../../pkgs/sway.nix {}}";
         EDITOR = "nvim";
         SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
       };
@@ -131,7 +131,6 @@
         nix-direnv.enable = true;
       };
       home.packages = with pkgs; [
-        #(inputs.jj.outputs.packages.${pkgs.system}.jujutsu)
         jujutsu
         go
         gopls
@@ -147,7 +146,6 @@
         openssl
         pkgconfig
         pkg-config
-        git-branchless
         github-cli
         ffmpeg
         xdg-utils
@@ -158,14 +156,11 @@
         rclone
         yt-dlp
         alejandra
+        vscode
         (pkgs.callPackage ./cgif.nix {})
         (pkgs.vips.overrideAttrs (old: {
           nativeBuildInputs = old.nativeBuildInputs ++ [(pkgs.callPackage ./cgif.nix {})];
         }))
-        (pkgs.writeShellApplication {
-          name = "code";
-          text = "${pkgs.vscode}/bin/code --enable-features=UseOzonePlatform --ozone-platform=wayland \"$@\"";
-        })
         (pkgs.writeShellApplication {
           name = "jjgit";
           text = "git --git-dir .jj/repo/store/git \"$@\"";
@@ -182,19 +177,6 @@
           name = "discord";
           exec = "discord";
           desktopName = "Discord";
-        })
-        (stdenv.mkDerivation{
-          pname = "spr";
-          version = "0.9.2";
-          src = fetchzip {
-            url = "https://github.com/ejoffe/spr/releases/download/v0.9.2/spr_linux_x86_64.tar.gz";
-            stripRoot = false;
-            sha256 = "sha256-hNNUx7q7VhxMhhkHK5d68jPanYOJMddF9bs4FimD5vY=";
-          };
-          installPhase = ''
-            install -m755 -D git-spr $out/bin/git-spr
-            install -m755 -D spr_reword_helper $out/bin/spr_reword_helper
-          '';
         })
         gomuks
       ];

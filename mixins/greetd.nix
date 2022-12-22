@@ -4,20 +4,19 @@
   ...
 }: let
   user = "sam";
-
-  users.users.greeter.packages = [pkgs.sway];
+  patchedSway = pkgs.callPackage ../pkgs/sway.nix {};
+  users.users.greeter.packages = [pkgs.callPackage ../pkgs/sway.nix];
   greetd = "${pkgs.greetd.greetd}/bin/greetd";
   gtkgreet = "${pkgs.greetd.gtkgreet}/bin/gtkgreet";
 
-  sway-kiosk = command: "${pkgs.sway}/bin/sway --unsupported-gpu --config ${pkgs.writeText "kiosk.config" ''
+  sway-kiosk = command: "${patchedSway}/bin/sway --unsupported-gpu --config ${pkgs.writeText "kiosk.config" ''
     output * bg #000000 solid_color
-    exec "${command}; ${pkgs.sway}/bin/swaymsg exit"
+    exec "${command}; ${patchedSway}/bin/swaymsg exit"
   ''}";
 in {
   environment.etc."greetd/environments".text =
-    "sway\n"
+    "${patchedSway}/bin/sway --unsupported-gpu\n"
     + "$SHELL -l\n";
-
   services.greetd = {
     enable = true;
     settings = {
@@ -27,7 +26,7 @@ in {
       };
       initial_session = {
         inherit user;
-        command = "sh -c sway";
+        command = "sh -c ${patchedSway}/bin/sway --unsupported-gpu";
       };
     };
   };

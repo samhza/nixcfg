@@ -6,12 +6,10 @@
 }: let
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta;
-  nvidiaPkg = config.boot.kernelPackages.nvidiaPackages.stable;
-  /*
+  nvidiaPkg =
     if (lib.versionOlder nvBeta.version nvStable.version)
     then config.boot.kernelPackages.nvidiaPackages.stable
     else config.boot.kernelPackages.nvidiaPackages.beta;
-    */
 in {
   config = {
     home-manager.users.sam = {pkgs, ...}: {
@@ -20,8 +18,10 @@ in {
 
     environment.sessionVariables = {
       WLR_DRM_NO_ATOMIC = "1";
-     WLR_NO_HARDWARE_CURSORS = "1";
+      WLR_NO_HARDWARE_CURSORS = "1";
       LIBVA_DRIVER_NAME = "nvidia";
+      GBM_BACKEND = "nvidia-drm";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       MOZ_DISABLE_RDD_SANDBOX = "1";
       EGL_PLATFORM = "wayland";
     };
