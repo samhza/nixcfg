@@ -52,7 +52,6 @@
       checkReversePath = "loose";
     };
     networkmanager.enable = true;
-    useDHCP = false;
     nameservers = ["100.100.100.100" "127.0.0.1" "::1"];
     networkmanager.dns = "none";
   };

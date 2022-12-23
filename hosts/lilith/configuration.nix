@@ -12,7 +12,7 @@
     ../../profiles/network.nix
     ../../profiles/sway
     ../../profiles/graphical.nix
-    #../../mixins/greetd.nix
+    ../../mixins/greetd.nix
     ../../mixins/gfx-nvidia.nix
     ../../mixins/gnupg.nix
     ../../mixins/easyeffects.nix
