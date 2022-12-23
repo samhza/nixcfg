@@ -54,6 +54,7 @@
     networkmanager.enable = true;
     nameservers = ["100.100.100.100" "127.0.0.1" "::1"];
     networkmanager.dns = "none";
+    useDHCP = false;
   };
   services.resolved.fallbackDns = config.networking.nameservers;
 }

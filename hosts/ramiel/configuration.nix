@@ -22,12 +22,21 @@
       owner = "acme";
       group = "acme";
     };
+    age.secrets."iwantmyname-creds" = {
+      file = ../../secrets/iwantmyname-creds.age;
+      owner = "acme";
+      group = "acme";
+    };
     security.acme = {
       acceptTerms = true;
       defaults.email = "sam@samhza.com";
       certs."samhza.com" = {
         dnsProvider = "cloudflare";
         credentialsFile = config.age.secrets."cloudflare-samhza-com-creds".path;
+      };
+      certs."goresh.it" = {
+        dnsProvider = "iwantmyname";
+        credentialsFile = config.age.secrets."iwantmyname-creds".path;
       };
     };
     users.users.nginx.extraGroups = [ "acme" ];
@@ -44,6 +53,13 @@
             '';
           };
           locations."/u/".root = "/var/www";
+      };
+      virtualHosts."goresh.it" = {
+          useACMEHost = "goresh.it";
+          forceSSL = true;
+          locations."= /" = {
+            return = "302 https://www.youtube.com/watch?v=ag-2yq6Puxs";
+          };
       };
     };
 
