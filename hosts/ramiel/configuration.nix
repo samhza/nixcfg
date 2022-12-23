@@ -5,7 +5,11 @@
   modulesPath,
   inputs,
   ...
-}: {
+}:
+let
+
+in
+{
   imports = [ 
     ../../profiles/network.nix
     ../../profiles/interactive.nix
@@ -15,7 +19,7 @@
   ];
   config = {
     networking.firewall = {
-      allowedTCPPorts = [ 80 443 ];
+      allowedTCPPorts = [ 80 443 1935 ];
     };
     age.secrets."cloudflare-samhza-com-creds" = {
       file = ../../secrets/cloudflare-samhza-com-creds.age;
@@ -40,6 +44,9 @@
       };
     };
     users.users.nginx.extraGroups = [ "acme" ];
+    systemd.services.nginx.preStart = ''
+      mkdir -p /tmp/{hls,dash}
+    '';
     services.nginx = {
       enable = true;
       virtualHosts."samhza.com" = {
@@ -49,7 +56,6 @@
           locations."= /" = {
             return = "200 '<pre>email: sam@samhza.com'";
             extraConfig = ''
-              add_header Content-Type text/html;
             '';
           };
           locations."/u/".root = "/var/www";
@@ -60,7 +66,32 @@
           locations."= /" = {
             return = "302 https://www.youtube.com/watch?v=ag-2yq6Puxs";
           };
+          locations."= /live" = {
+            default_type = "text/html";
+            alias = ./cheers.html;
+          };
+          locations."/dash" = {
+            extraConfig = ''
+              autoindex on;
+            '';
+            root = "/tmp";
+          };
       };
+      appendConfig = ''
+        rtmp {
+            server {
+                chunk_size 4096;
+                listen 1935; 
+                application live { 
+                    live on;
+                    record off;
+                    dash on; 
+                    dash_playlist_length 30s;
+                    dash_path /tmp/dash;
+                }
+            } 
+        }
+      '';
     };
 
     boot.cleanTmpDir = true;

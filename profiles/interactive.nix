@@ -25,9 +25,14 @@
       };
       programs.fish = {
         enable = true;
+        shellInit = ''
+          set fish_greeting
+        '';
         shellAliases = {
           gc = "git clone";
           l = "ls -alh";
+          nr = "nix run nixpkgs#$1";
+          ns = "nix shell nixpkgs#$1";
         };
         functions = {
           sb.body = "sudo nixos-rebuild build --flake ~/sources/nixcfg#(hostname)";

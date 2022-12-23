@@ -16,7 +16,7 @@
     services.getty = {
       greetingLine = ''\l  -  (kernel: \r) (label: ${config.system.nixos.label}) (arch: \m)'';
       helpLine = ''
-          Welcome to my \033[1mDEATH MACHINE\033[0m, interloper!
+          Welcome to my DEATH MACHINE, interloper!
       '';
     };
     documentation = {

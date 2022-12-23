@@ -21,6 +21,10 @@ in {
           hwdec = "auto";
           vo = "wlshm";
         };
+        bindings = {
+          "a" = "playlist-prev";
+          "r" = "playlist-next";
+        };
       };
       home.packages = with pkgs; [
         iosevka-comfy.comfy-fixed
@@ -30,6 +34,7 @@ in {
         noto-fonts
         noto-fonts-emoji
         noto-fonts-cjk
+        corefonts
       ];
       gtk = {
         theme.package = pkgs.gnome.gnome-themes-extra;

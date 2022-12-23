@@ -10,8 +10,8 @@
     ../../profiles/interactive.nix
     ../../profiles/security.nix
     ../../profiles/network.nix
-    ../../profiles/sway
     ../../profiles/graphical.nix
+    ../../profiles/sway
     ../../mixins/greetd.nix
     ../../mixins/gfx-nvidia.nix
     ../../mixins/gnupg.nix
@@ -41,7 +41,6 @@
     programs.dconf.enable = true;
     home-manager.users.sam = {pkgs, ...} @ hm: {
       home.sessionVariables = {
-        IDK = "${pkgs.callPackage ../../pkgs/sway.nix {}}";
         EDITOR = "nvim";
         SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
       };
@@ -69,7 +68,15 @@
         templates = "${configHome}/templates";
         videos = "${homeDirectory}/videos";
       };
-      wayland.windowManager.sway.config.output."DP-2".resolution = "1920x1080@166Hz";
+      wayland.windowManager.sway.config.output."DP-2" = {
+        resolution = "1920x1080@166Hz";
+        position = "1280,0";
+      };
+      wayland.windowManager.sway.config.output."HEADLESS-1" = {
+        resolution = "1280x720@30Hz";
+        position = "0,900";
+        bg = "#000000 solid_color";
+      };
       systemd.user.services."logseq-sync" = {
         Unit.Description = "sync logseq ~/knowledge";
         Service = {
@@ -131,6 +138,8 @@
         nix-direnv.enable = true;
       };
       home.packages = with pkgs; [
+        alacritty
+        gnomeExtensions.dash-to-panel
         jujutsu
         go
         gopls
@@ -230,6 +239,8 @@
         git
       ];
     };
+    boot.loader.systemd-boot.consoleMode = "max";
+    console.keyMap = "${pkgs.colemak-dh}/share/keymaps/i386/colemak/colemak_dh_ansi_us.map";
 
     boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod"];
     boot.initrd.kernelModules = ["dm-snapshot"];

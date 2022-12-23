@@ -31,19 +31,19 @@
     '';
   patchedSway = pkgs.callPackage ../../pkgs/sway.nix {};
 in {
-  config.home-manager.users.sam.xdg.configFile."i3status-rust/config.toml".source = ./i3status-rs.toml;
-  config.security.pam.services.swaylock = {};
-  config.home-manager.users.sam.programs.mako.enable = true;
-  config.home-manager.users.sam.home.packages = with pkgs; [
+  home-manager.users.sam.xdg.configFile."i3status-rust/config.toml".source = ./i3status-rs.toml;
+  security.pam.services.swaylock = {};
+  home-manager.users.sam.programs.mako.enable = true;
+  home-manager.users.sam.home.packages = with pkgs; [
     grim
     slurp
     wf-recorder
     font-awesome
   ];
-  config.home-manager.users.sam.home.sessionVariables = {
+  home-manager.users.sam.home.sessionVariables = {
     "NIXOS_OZONE_WL" = "1";
   };
-  config.home-manager.users.sam.services.swayidle = let
+  home-manager.users.sam.services.swayidle = let
     pgrep = "${pkgs.procps}/bin/pgrep";
     dpms_check = s:
       pkgs.writeShellScript "dpms_check_${s}" ''
@@ -79,7 +79,15 @@ in {
       "idlehint 30"
     ];
   };
-  config.home-manager.users.sam.wayland.windowManager.sway = rec {
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = with pkgs;
+  [
+    xdg-desktop-portal-wlr
+    (xdg-desktop-portal-gtk.override {
+      buildPortalsInGnome = false;
+    })
+  ];
+  home-manager.users.sam.wayland.windowManager.sway = rec {
     enable = true;
     package = patchedSway;
     systemdIntegration = true; # beta
@@ -212,8 +220,6 @@ in {
 
       output * bg ~/tmp/graveyard.png fill
 
-
-
       floating_modifier $mod normal
       mode notifications {
       	bindsym Escape mode default
@@ -253,7 +259,7 @@ in {
       exec ${pkgs.mako}/bin/mako >/tmp/mako.log 2>&1
       exec_always kanshi >/tmp/kanshi.log 2>&1
 
-      include /etc/sway/config.d/*
+      include /etc/sway/d/*
     '';
   };
 }

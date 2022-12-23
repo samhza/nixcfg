@@ -28,6 +28,7 @@ in {
     boot.initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_drm" "nvidia_uvm" ];
     hardware = {
       opengl.enable = true;
+      opengl.driSupport32Bit = true;
       opengl.extraPackages = [pkgs.nvidia-vaapi-driver];
       nvidia = {
         open = true;

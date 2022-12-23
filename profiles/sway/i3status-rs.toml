@@ -10,8 +10,8 @@ marquee = false
 on_click = "playerctl play-pause"
 dynamic_width = true
 
-[[block]]
-block = "networkmanager"
+#[[block]]
+#block = "networkmanager"
 
 [[block]]
 block = "sound"

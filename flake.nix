@@ -6,7 +6,8 @@
     utils.url = "github:numtide/flake-utils";
     impermanence.url = "github:nix-community/impermanence";
     nixos-hardware.url = "github:nixos/nixos-hardware";
-    agenix.url = "github:ryantm/agenix";
+    nixpkgs-wayland = { url = "github:nix-community/nixpkgs-wayland/master"; inputs."nixpkgs".follows = "nixpkgs"; };
+    agenix = { url = "github:ryantm/agenix"; inputs."nixpkgs".follows = "nixpkgs"; };
     jj.url = "github:martinvonz/jj";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
