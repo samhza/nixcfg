@@ -12,7 +12,7 @@
       please.wheelNeedsPassword = false;
     };
     i18n.defaultLocale = "en_US.UTF-8";
-    time.timeZone = "America/Los_Angeles";
+    time.timeZone = "America/New_York";
     services.getty = {
       greetingLine = ''\l  -  (kernel: \r) (label: ${config.system.nixos.label}) (arch: \m)'';
       helpLine = ''

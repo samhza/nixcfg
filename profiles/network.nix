@@ -3,8 +3,10 @@
     openssh = {
       enable = true;
       openFirewall = true;
-      passwordAuthentication = false;
-      permitRootLogin = "no";
+      settings = {
+        PasswordAuthentication = false;
+        PermitRootLogin = "no";
+      };
       startWhenNeeded = true;
       extraConfig = ''
         AllowTcpForwarding yes
