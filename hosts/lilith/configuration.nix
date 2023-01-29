@@ -27,6 +27,7 @@
     inputs.nixos-hardware.nixosModules.common-pc-ssd
   ];
   config = {
+    services.mullvad-vpn.enable = true;
     networking = {
       hostName = "lilith";
       /*
@@ -103,7 +104,7 @@
         Install.WantedBy = ["default.target"];
       };
       programs.git = {
-        userName = "samhza";
+        userName = "Samuel Hernandez";
         userEmail = "sam@samhza.com";
         enable = true;
         extraConfig.core.excludesfile = "~/.config/git/ignore";
@@ -138,9 +139,11 @@
         nix-direnv.enable = true;
       };
       home.packages = with pkgs; [
+        nodejs
         alacritty
         gnomeExtensions.dash-to-panel
         jujutsu
+        git-branchless
         go
         gopls
         gotools

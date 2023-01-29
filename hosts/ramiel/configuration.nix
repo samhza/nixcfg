@@ -56,6 +56,7 @@ in
           locations."= /" = {
             return = "200 '<pre>email: sam@samhza.com'";
             extraConfig = ''
+               types { } default_type "text/html; charset=utf-8";
             '';
           };
           locations."/u/".root = "/var/www";
@@ -64,10 +65,12 @@ in
           useACMEHost = "goresh.it";
           forceSSL = true;
           locations."= /" = {
-            return = "302 https://www.youtube.com/watch?v=ag-2yq6Puxs";
+            return = "302 https://goreshit.bandcamp.com/";
           };
           locations."= /live" = {
-            default_type = "text/html";
+            extraConfig = ''
+               types { } default_type "text/html; charset=utf-8";
+            '';
             alias = ./cheers.html;
           };
           locations."/dash" = {
@@ -82,7 +85,8 @@ in
             server {
                 chunk_size 4096;
                 listen 1935; 
-                application live { 
+                application live {
+                    allow publish 127.0.0.1;
                     live on;
                     record off;
                     dash on; 
