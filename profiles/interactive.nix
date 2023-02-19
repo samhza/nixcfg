@@ -13,6 +13,9 @@
         curl
         fd
         ripgrep
+        tmux
+        htop
+        unzip
       ];
       programs.ssh = {
         enable = true;

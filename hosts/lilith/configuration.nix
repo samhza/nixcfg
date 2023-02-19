@@ -27,17 +27,18 @@
     inputs.nixos-hardware.nixosModules.common-pc-ssd
   ];
   config = {
+    services.transmission = {
+      enable = true;
+      group = "media";
+      settings = {
+        download-dir = "/4tb/bt/done";
+        incomplete-dir = "/4tb/bt/partial";
+      };
+    };
+    users.groups.media.members = [ "sam" "transmission" ];
     services.mullvad-vpn.enable = true;
     networking = {
       hostName = "lilith";
-      /*
-      extraHosts = ''
-        0.0.0.0 discord.com
-        0.0.0.0 reddit.com
-        0.0.0.0 lobste.rs
-        0.0.0.0 wetdry.world
-      '';
-      */
     };
     programs.dconf.enable = true;
     home-manager.users.sam = {pkgs, ...} @ hm: {
@@ -139,6 +140,9 @@
         nix-direnv.enable = true;
       };
       home.packages = with pkgs; [
+        pavucontrol
+        foliate
+        entr
         nodejs
         alacritty
         gnomeExtensions.dash-to-panel

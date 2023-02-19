@@ -6,6 +6,7 @@
   user = "sam";
   patchedSway = pkgs.callPackage ../pkgs/sway.nix {};
   users.users.greeter.packages = [patchedSway];
+  # users.users.greeter.packages = [pkgs.sway];
   greetd = "${pkgs.greetd.greetd}/bin/greetd";
 in {
   services.greetd = {
