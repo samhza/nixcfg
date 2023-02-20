@@ -27,7 +27,7 @@
         specialArgs = {inherit inputs;};
       };
     mkSystem = pkgs: system: h: (mkSystem_ pkgs system h [
-        inputs.agenix.nixosModule
+        inputs.agenix.nixosModules.default
       ]);
   in {
     nixosConfigurations = {
