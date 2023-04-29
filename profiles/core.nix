@@ -22,7 +22,7 @@
       '';
     };
     home-manager.users.sam = {pkgs, ...}@hm: {
-      home.stateVersion = "21.11";
+      home.stateVersion = "22.11";
     };
   };
 }

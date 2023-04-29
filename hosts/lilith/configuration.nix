@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  modulesPath,
   inputs,
   ...
 }: {
@@ -13,6 +12,7 @@
     ../../profiles/graphical.nix
     ../../profiles/sway
     ../../mixins/greetd.nix
+    ../../mixins/helix.nix
     ../../mixins/gfx-nvidia.nix
     ../../mixins/gnupg.nix
     ../../mixins/easyeffects.nix
@@ -39,6 +39,9 @@
     services.mullvad-vpn.enable = true;
     networking = {
       hostName = "lilith";
+    };
+    networking.firewall = {
+      allowedTCPPorts = [ 2234 ];
     };
     programs.dconf.enable = true;
     home-manager.users.sam = {pkgs, ...} @ hm: {
@@ -129,7 +132,7 @@
       };
       programs.browserpass = {
         enable = true;
-        browsers = ["chrome"];
+        browsers = ["chrome" "vivaldi"];
       };
       programs.nix-index = {
         enable = true;
@@ -142,8 +145,11 @@
       home.packages = with pkgs; [
         pavucontrol
         foliate
+        nicotine-plus
+        lollypop
         entr
         nodejs
+        python3
         alacritty
         gnomeExtensions.dash-to-panel
         jujutsu
@@ -157,6 +163,7 @@
         gimp
         gdu
         vivaldi
+        vivaldi-ffmpeg-codecs
         rustup
         imv
         openssl
@@ -286,7 +293,6 @@
 
     hardware.enableRedistributableFirmware = true;
     hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    hardware.video.hidpi.enable = lib.mkDefault true;
 
     system.stateVersion = "22.11";
   };

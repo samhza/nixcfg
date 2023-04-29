@@ -1,23 +1,43 @@
-icons = "awesome"
+[icons]
+icons = "awesome6"
 
 [theme]
-name = "native"
+theme = "semi-native"
+[theme.overrides]
+separator = ""
 
 [[block]]
 block = "music"
-hide_when_empty = true
-marquee = false
-on_click = "playerctl play-pause"
-dynamic_width = true
+[[block.click]]
+action = "play_pause"
+button = "left"
 
-#[[block]]
-#block = "networkmanager"
+[[block]]
+block = "net"
+format = " $icon {$ssid |}$ip "
+[[block]]
+block = "memory"
+format = " $icon $mem_total_used_percents.eng(w:2) "
+
+[[block]]
+block = "cpu"
+
+[[block]]
+block = "load"
+
+[[block]]
+block = "battery"
+interval = 10
+#format = "$percentage $time"
 
 [[block]]
 block = "sound"
-on_click = "pavucontrol"
+headphones_indicator=true
+[[block.click]]
+cmd = "pavucontrol"
+button = "left"
 
 [[block]]
 block = "time"
 interval = 60
-format = "%a %Y-%m-%d %H:%M"
+format = "$icon $timestamp.datetime(f:'%a %Y-%m-%d %H:%M')"

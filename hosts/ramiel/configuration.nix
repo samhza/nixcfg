@@ -60,6 +60,7 @@ in
             '';
           };
           locations."/u/".root = "/var/www";
+          locations."/r/place".root = "/var/www";
       };
       virtualHosts."goresh.it" = {
           useACMEHost = "goresh.it";

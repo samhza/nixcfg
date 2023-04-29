@@ -11,6 +11,7 @@
     jj.url = "github:martinvonz/jj";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    helix.url = "github:helix-editor/helix/23.03";
     site = {
       url = "github:samhza/samhza.com";
       inputs.nixpkgs.follows = "nixpkgs";

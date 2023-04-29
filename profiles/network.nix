@@ -23,7 +23,7 @@
   security.pam.enableSSHAgentAuth = true;
 
   services.dnscrypt-proxy2 = {
-    enable = true;
+    #enable = true;
     settings = {
       ipv6_servers = true;
       require_dnssec = true;
@@ -40,9 +40,9 @@
     };
   };
 
-  systemd.services.dnscrypt-proxy2.serviceConfig = {
-    StateDirectory = "dnscrypt-proxy";
-  };
+  #systemd.services.dnscrypt-proxy2.serviceConfig = {
+  #  StateDirectory = "dnscrypt-proxy";
+  #};
 
   networking = {
     firewall = {
@@ -54,9 +54,9 @@
       checkReversePath = "loose";
     };
     networkmanager.enable = true;
-    nameservers = ["100.100.100.100" "127.0.0.1" "::1"];
-    networkmanager.dns = "none";
+    #nameservers = ["100.100.100.100" "127.0.0.1" "::1"];
+    #networkmanager.dns = "none";
     useDHCP = false;
   };
-  services.resolved.fallbackDns = config.networking.nameservers;
+  #services.resolved.fallbackDns = config.networking.nameservers;
 }

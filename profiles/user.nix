@@ -8,6 +8,7 @@
   config = {
     users.mutableUsers = false;
     environment.defaultPackages = lib.mkForce [];
+    programs.fish.enable = true;
     users.users.sam = {
       isNormalUser = true;
       description = "Me";

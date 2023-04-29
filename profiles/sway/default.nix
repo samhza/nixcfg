@@ -22,20 +22,22 @@
       cat <"$out_pipe"
     '';
   sel =
-    pkgs.writeShellScript "sel"
-    ''
-      #!/bin/sh
+    pkgs.writeShellApplication {
+    name = "sel";
+    text =''
       swaymsg -t get_tree | \
       ${pkgs.jq}/bin/jq -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | \
       ${pkgs.slurp}/bin/slurp
     '';
+    };
   patchedSway = pkgs.callPackage ../../pkgs/sway.nix {};
 in {
   home-manager.users.sam.xdg.configFile."i3status-rust/config.toml".source = ./i3status-rs.toml;
   security.pam.services.swaylock = {};
-  home-manager.users.sam.programs.mako.enable = true;
+  home-manager.users.sam.services.mako.enable = true;
   home-manager.users.sam.home.packages = with pkgs; [
     grim
+    sel
     slurp
     wf-recorder
     font-awesome
@@ -251,7 +253,7 @@ in {
       bindsym XF86MonBrightnessDown exec light -U 5
 
       bindsym Print exec ${pkgs.grim}/bin/grim - | tee $(xdg-user-dir PICTURES)/$(date +'%s_grim.png') | wl-copy
-      bindsym Shift+Print exec ${pkgs.grim}/bin/grim -g "$(${sel})" - | tee $(xdg-user-dir PICTURES)/$(date +'%s_grim.png') | wl-copy
+      bindsym Shift+Print exec ${pkgs.grim}/bin/grim -g "$(${sel}/bin/sel)" - | tee $(xdg-user-dir PICTURES)/$(date +'%s_grim.png') | wl-copy
       bindsym Ctrl+Print exec ${pkgs.grim}/bin/grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')" - |tee $(xdg-user-dir PICTURES)/$(date +'%s_grim.png') | wl-copy
 
       bindsym $mod+l exec ${pkgs.swaylock}/bin/swaylock -c 070D0D

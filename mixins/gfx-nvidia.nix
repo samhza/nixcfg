@@ -1,11 +1,9 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
+{ config, pkgs, lib, ... }:
+
+let
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta;
+  # nvidiaPkg = nvStable;
   nvidiaPkg =
     if (lib.versionOlder nvBeta.version nvStable.version)
     then config.boot.kernelPackages.nvidiaPackages.stable
@@ -31,7 +29,7 @@ in {
       opengl.driSupport32Bit = true;
       opengl.extraPackages = [pkgs.nvidia-vaapi-driver];
       nvidia = {
-        open = true;
+        # open = true;
         modesetting.enable = true;
         nvidiaSettings = false;
         package = nvidiaPkg;
