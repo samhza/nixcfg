@@ -33,6 +33,7 @@
   in {
     nixosConfigurations = {
       lilith = mkSystem inputs.nixpkgs "x86_64-linux" "lilith";
+      leliel = mkSystem inputs.nixpkgs "x86_64-linux" "leliel";
       ramiel = mkSystem inputs.nixpkgs "x86_64-linux" "ramiel";
     };
 

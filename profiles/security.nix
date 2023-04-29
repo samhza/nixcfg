@@ -15,6 +15,7 @@
   security.forcePageTableIsolation = true;
 
   security.virtualisation.flushL1DataCache = "always";
+  security.polkit.enable = true;
 
   boot.kernelParams = [
     "init_on_free=1"

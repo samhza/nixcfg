@@ -5,6 +5,7 @@
     ./core.nix
   ];
   config = {
+    services.dbus.packages = with pkgs; [ pkgs.dconf ];
     home-manager.users.sam = {pkgs, ...}@hm: {
       home.packages = with pkgs; [
         rsync

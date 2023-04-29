@@ -4,7 +4,8 @@
   ...
 }: let
   user = "sam";
-  patchedSway = pkgs.callPackage ../pkgs/sway.nix {};
+  #patchedSway = pkgs.callPackage ../pkgs/sway.nix {};
+  patchedSway = pkgs.sway;
   users.users.greeter.packages = [patchedSway];
   # users.users.greeter.packages = [pkgs.sway];
   greetd = "${pkgs.greetd.greetd}/bin/greetd";
@@ -14,7 +15,7 @@ in {
     settings = rec {
       initial_session = {
         inherit user;
-        command = "sway --unsupported-gpu";
+        command = "sway";
       };
       default_session = initial_session;
     };
