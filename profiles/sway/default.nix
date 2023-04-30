@@ -93,7 +93,6 @@ in {
     ];
     home-manager.users.sam.wayland.windowManager.sway = rec {
       enable = true;
-      package = config.programs.sway.package;
       systemdIntegration = true; # beta
       wrapperFeatures = {
         base = false; # this should be the default (dbus activation, not sure where XDG_CURRENT_DESKTOP comes from)
@@ -251,8 +250,8 @@ in {
         for_window [app_id="imv"] floating enable
         for_window [class="PacketTracer"] floating enable
 
-        bindsym XF86MonBrightnessUp exec light -A 5
-        bindsym XF86MonBrightnessDown exec light -U 5
+        bindsym XF86MonBrightnessUp exec ${pkgs.light}/bin/light -A 5
+        bindsym XF86MonBrightnessDown exec ${pkgs.light}/bin/light -U 5
 
         bindsym Print exec ${pkgs.grim}/bin/grim - | tee $(xdg-user-dir PICTURES)/$(date +'%s_grim.png') | wl-copy
         bindsym Shift+Print exec ${pkgs.grim}/bin/grim -g "$(${sel}/bin/sel)" - | tee $(xdg-user-dir PICTURES)/$(date +'%s_grim.png') | wl-copy

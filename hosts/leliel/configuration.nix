@@ -18,6 +18,7 @@
     ../../mixins/kanata.nix
     ../../mixins/gnupg.nix
     ../../mixins/helix.nix
+    ../../mixins/tailscale.nix
     ./hardware-configuration.nix
 
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-6th-gen
@@ -26,6 +27,8 @@
     networking = {
       hostName = "leliel";
     };
+    services.kanata.keyboards.colemak.devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" ];
+    services.mullvad-vpn.enable = true;
     programs.sway.enable = true;
     programs.dconf.enable = true;
     home-manager.users.sam = {pkgs, ...} @ hm: {
@@ -58,10 +61,17 @@
         EDITOR = "nvim";
         SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
       };
-      wayland.windowManager.sway.config.seat."*".xcursor_theme ="Vanilla-DMZ 32";
+      wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 28";
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
+        apple-cursor
         vivaldi
+        vivaldi-ffmpeg-codecs
+        xdg-utils
+        (pkgs.writeShellApplication {
+          name = "discord";
+          text = "${pkgs.discord}/bin/discord --enable-features=UseOzonePlatform --ozone-platform=wayland";
+        })
       ];
       xdg.userDirs = let
         inherit (config.home-manager.users.sam.home) homeDirectory;
@@ -136,6 +146,7 @@
       ];
     };
     boot.loader.systemd-boot.consoleMode = "max";
+    boot.kernelParams = [ "quiet" ];
     console.keyMap = "${pkgs.colemak-dh}/share/keymaps/i386/colemak/colemak_dh_ansi_us.map";
 
     boot.loader.efi.efiSysMountPoint = "/boot/esp";
@@ -150,7 +161,6 @@
     };
 
     hardware.enableRedistributableFirmware = true;
-    hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
     system.stateVersion = "22.11";
   };

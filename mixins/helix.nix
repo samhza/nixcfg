@@ -32,9 +32,16 @@ in
               J = "move_next_long_word_end";
               N = "join_selections";
               A-N = "join_selections_space";
+              l = "jump_backward";
+              L = "jump_forward";
               g = goto;
+              r = {
+                t = "find_till_char";
+              };
               space = spc;
               C-w = window;
+              C-3 = window;
+              t = window;
             };
             window = {
               n="jump_view_down";

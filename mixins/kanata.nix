@@ -1,13 +1,6 @@
 { config, lib, pkgs, ... }: {
-  config = {
-      users.groups = { uinput = { }; };
-      services.udev.extraRules = ''
-  KERNEL=="uinput", SUBSYSTEM=="misc", TAG+="uaccess", OPTIONS+="static_node=uinput", GROUP="input", MODE="0660"
-'';
-  };
   config.services.kanata = {
     enable = true;
-    keyboards.colemak.devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" ];
     keyboards.colemak.config = ''
 
 (defsrc
