@@ -33,21 +33,31 @@
   patchedSway = pkgs.sway;
 in {
   config = {
-    home-manager.users.sam.xdg.configFile."i3status-rust/config.toml".source = ./i3status-rs.toml;
     programs.sway.enable = true;
     security.pam.services.swaylock = {};
-    home-manager.users.sam.services.mako.enable = true;
-    home-manager.users.sam.home.packages = with pkgs; [
+    xdg.portal.enable = true;
+    xdg.portal.extraPortals = with pkgs;
+    [
+      xdg-desktop-portal-wlr
+      (xdg-desktop-portal-gtk.override {
+        buildPortalsInGnome = false;
+      })
+    ];
+    home-manager.users.sam = { pkgs, config, ...}@hm: {
+
+    xdg.configFile."i3status-rust/config.toml".source = ./i3status-rs.toml;
+    services.mako.enable = true;
+    home.packages = with pkgs; [
       grim
       sel
       slurp
       wf-recorder
       font-awesome
     ];
-    home-manager.users.sam.home.sessionVariables = {
+    home.sessionVariables = {
       "NIXOS_OZONE_WL" = "1";
     };
-    home-manager.users.sam.services.swayidle = let
+    services.swayidle = let
       pgrep = "${pkgs.procps}/bin/pgrep";
       dpms_check = s:
         pkgs.writeShellScript "dpms_check_${s}" ''
@@ -83,21 +93,17 @@ in {
         "idlehint 30"
       ];
     };
-    xdg.portal.enable = true;
-    xdg.portal.extraPortals = with pkgs;
-    [
-      xdg-desktop-portal-wlr
-      (xdg-desktop-portal-gtk.override {
-        buildPortalsInGnome = false;
-      })
-    ];
-    home-manager.users.sam.wayland.windowManager.sway = rec {
+    wayland.windowManager.sway = {
       enable = true;
       systemdIntegration = true; # beta
       wrapperFeatures = {
-        base = false; # this should be the default (dbus activation, not sure where XDG_CURRENT_DESKTOP comes from)
+        # base = false; # this should be the default (dbus activation, not sure where XDG_CURRENT_DESKTOP comes from)
         gtk = true; # I think this is also the default...
       };
+      
+      extraSessionCommands = ''
+        . "${hm.config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
+      '';      
       config = rec {
         fonts = {
           names = ["Iosevka Comfy Fixed"];
@@ -253,17 +259,20 @@ in {
         bindsym XF86MonBrightnessUp exec ${pkgs.light}/bin/light -A 5
         bindsym XF86MonBrightnessDown exec ${pkgs.light}/bin/light -U 5
 
-        bindsym Print exec ${pkgs.grim}/bin/grim - | tee $(xdg-user-dir PICTURES)/$(date +'%s_grim.png') | wl-copy
-        bindsym Shift+Print exec ${pkgs.grim}/bin/grim -g "$(${sel}/bin/sel)" - | tee $(xdg-user-dir PICTURES)/$(date +'%s_grim.png') | wl-copy
-        bindsym Ctrl+Print exec ${pkgs.grim}/bin/grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')" - |tee $(xdg-user-dir PICTURES)/$(date +'%s_grim.png') | wl-copy
+        bindsym Print exec ${pkgs.grim}/bin/grim - | tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s_grim.png') | wl-copy
+        bindsym Shift+Print exec ${pkgs.grim}/bin/grim -g "$(${sel}/bin/sel)" - | tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s_grim.png') | wl-copy
+        bindsym Ctrl+Print exec ${pkgs.grim}/bin/grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')" - |tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s_grim.png') | wl-copy
 
         bindsym $mod+l exec ${pkgs.swaylock}/bin/swaylock -c 070D0D
 
         exec ${pkgs.mako}/bin/mako >/tmp/mako.log 2>&1
         exec_always kanshi >/tmp/kanshi.log 2>&1
+        
+
 
         include /etc/sway/d/*
       '';
+    };
     };
   };
 }

@@ -12,6 +12,7 @@
     else config.boot.kernelPackages.nvidiaPackages.beta;
 in {
   config = {
+    programs.light.enable = true;
     home-manager.users.sam = {...}: {
       services.gnome-keyring.enable = true;
       fonts.fontconfig.enable = true;

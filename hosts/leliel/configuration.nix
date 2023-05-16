@@ -28,6 +28,9 @@
       hostName = "leliel";
     };
     services.kanata.keyboards.colemak.devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" ];
+    networking.firewall.checkReversePath = "loose";
+    networking.nftables.enable = true;
+    networking.wireguard.enable = true;
     services.mullvad-vpn.enable = true;
     programs.sway.enable = true;
     programs.dconf.enable = true;
@@ -57,20 +60,52 @@
           bright7 = "ffffff";   # bright white
         };
       };
+
+
+      systemd.user.services."logseq-sync" = {
+        Unit.Description = "sync logseq ~/knowledge";
+        Service = {
+          Type = "oneshot";
+          Environment = [
+            "PATH=${lib.makeBinPath (with pkgs; [openssh git])}"
+          ];
+          WorkingDirectory = "/home/sam/knowledge";
+          ExecStart = "${pkgs.writeShellScript "logseq-sync"
+            ''
+              #!/bin/sh -eu
+              git pull --ff-only
+              git push
+            ''}";
+        };
+      };
+      systemd.user.timers."logseq-sync" = {
+        Unit.Description = "sync logseq ~/knowledge";
+        Timer = {
+          OnBootSec = "1m";
+          OnUnitInactiveSec = "1m";
+          Unit = "logseq-sync.service";
+        };
+        Install.WantedBy = ["default.target"];
+      };
+      
       home.sessionVariables = {
         EDITOR = "nvim";
         SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
       };
-      wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 28";
+      wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 26";
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
+        # ciscoPacketTracer8
+        rust-analyzer
+        appimage-run
         apple-cursor
         vivaldi
         vivaldi-ffmpeg-codecs
         xdg-utils
+        discord
         (pkgs.writeShellApplication {
-          name = "discord";
-          text = "${pkgs.discord}/bin/discord --enable-features=UseOzonePlatform --ozone-platform=wayland";
+          name = "logseq";
+          text = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
         })
       ];
       xdg.userDirs = let
@@ -87,6 +122,7 @@
         templates = "${configHome}/templates";
         videos = "${homeDirectory}/videos";
       };
+      programs.gh.enable = true;
       programs.git = {
         userName = "Samuel Hernandez";
         userEmail = "sam@samhza.com";
@@ -129,22 +165,6 @@
     networking.networkmanager.enable = true;
 
     hardware.pulseaudio.enable = false;
-
-
-    users.users.sam = {
-      isNormalUser = true;
-      extraGroups = ["wheel"];
-      packages = with pkgs; [
-        firefox
-        discord
-        (pkgs.google-chrome.override {
-          commandLineArgs = ["--force-dark-mode"];
-        })
-        thunderbird
-        neovim
-        git
-      ];
-    };
     boot.loader.systemd-boot.consoleMode = "max";
     boot.kernelParams = [ "quiet" ];
     console.keyMap = "${pkgs.colemak-dh}/share/keymaps/i386/colemak/colemak_dh_ansi_us.map";

@@ -36,6 +36,8 @@
       };
     };
     users.groups.media.members = [ "sam" "transmission" ];
+    networking.firewall.checkReversePath = "loose";
+    networking.wireguard.enable = true;
     services.mullvad-vpn.enable = true;
     networking = {
       hostName = "lilith";
