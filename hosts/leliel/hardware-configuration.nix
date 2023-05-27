@@ -4,29 +4,24 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ "dm-snapshot" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "bcache" ];
+  boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+  boot.supportedFilesystems = [ "bcachefs" ];
+
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/88009d8f-1ace-4109-8693-bcb47608635c";
-      fsType = "ext4";
+    { device = "/dev/nvme0n1p3";
+      fsType = "bcachefs";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/9f55c42f-53b7-42aa-8f0e-710f628a02a9";
-      fsType = "ext4";
-    };
-
-  fileSystems."/boot/esp" =
-    { device = "/dev/disk/by-uuid/B189-AB81";
+    { device = "/dev/disk/by-uuid/7809-8B85";
       fsType = "vfat";
     };
 
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/21806ddb-62df-41cd-abea-e16c8f2a1c77"; }
-    ];
+  swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -39,5 +34,4 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  # high-resolution display
 }

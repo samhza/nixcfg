@@ -169,16 +169,8 @@
     boot.kernelParams = [ "quiet" ];
     console.keyMap = "${pkgs.colemak-dh}/share/keymaps/i386/colemak/colemak_dh_ansi_us.map";
 
-    boot.loader.efi.efiSysMountPoint = "/boot/esp";
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
-    boot.initrd.luks.devices = {
-      root = {
-        device = "/dev/disk/by-uuid/6e76474f-a83e-4ab3-8264-611b2e39300d";
-        preLVM = true;
-        allowDiscards = true;
-      };
-    };
 
     hardware.enableRedistributableFirmware = true;
 
