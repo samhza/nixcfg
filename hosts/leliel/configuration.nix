@@ -96,10 +96,13 @@
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
         # ciscoPacketTracer8
+        spotify
         rust-analyzer
         appimage-run
         apple-cursor
-        vivaldi
+        (pkgs.vivaldi.override {
+          commandLineArgs = ["--force-dark-mode"];
+        })
         vivaldi-ffmpeg-codecs
         xdg-utils
         discord
