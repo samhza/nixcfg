@@ -13,6 +13,7 @@
 in {
   config = {
     programs.light.enable = true;
+    users.groups.video = {};
     home-manager.users.sam = {...}: {
       services.gnome-keyring.enable = true;
       fonts.fontconfig.enable = true;

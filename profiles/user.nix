@@ -12,7 +12,7 @@
     users.users.sam = {
       isNormalUser = true;
       description = "Me";
-      extraGroups = ["wheel" "libvirtd" "qemu-libvirtd" "light"];
+      extraGroups = ["wheel" "libvirtd" "qemu-libvirtd" "video"];
       packages = [pkgs.git];
       shell = pkgs.fish;
       hashedPassword = "$6$QQi9EyY4ZOXo3zvI$lQmc0LT/yRBlwidDU2Hp1TWJBMYWSGbBlyKFDABK5LdQtGE62IA2mx7UuQVkZSSGijeGMnfN6K1CFzDHxnUHP1";

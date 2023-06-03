@@ -89,7 +89,7 @@
       };
       
       home.sessionVariables = {
-        EDITOR = "nvim";
+        EDITOR = "hx";
         SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
       };
       wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 26";
@@ -100,6 +100,7 @@
         rust-analyzer
         appimage-run
         apple-cursor
+        (pkgs.callPackage ../../pkgs/beeper-desktop.nix {} )
         (pkgs.vivaldi.override {
           commandLineArgs = ["--force-dark-mode"];
         })

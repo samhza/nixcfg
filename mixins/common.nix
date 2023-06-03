@@ -19,13 +19,13 @@
           Welcome to my DEATH MACHINE, interloper!
       '';
     };
-    documentation = {
-      enable = false;
-      doc.enable = false;
-      man.enable = true;
-      info.enable = false;
-      nixos.enable = false;
-    };
+    # documentation = {
+    #   enable = false;
+    #   doc.enable = false;
+    #   man.enable = true;
+    #   info.enable = false;
+    #   nixos.enable = false;
+    # };
   };
 }
 

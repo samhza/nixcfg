@@ -14,7 +14,7 @@ in
     ../../profiles/network.nix
     ../../profiles/interactive.nix
     ../../mixins/tailscale.nix
-    # ../../mixins/esammy.nix
+    ../../mixins/esammy.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
   config = {
