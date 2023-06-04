@@ -19,8 +19,9 @@ in
   ];
   config = {
     networking.firewall = {
-      allowedTCPPorts = [ 80 443 1935 ];
+      allowedTCPPorts = [ 80 443 1935 2022 ];
     };
+    services.eternal-terminal.enable = true;
     age.secrets."cloudflare-samhza-com-creds" = {
       file = ../../secrets/cloudflare-samhza-com-creds.age;
       owner = "acme";
