@@ -8,7 +8,7 @@
   ];
   config = {
     nix = {
-      #registry.nixpkgs.flake = inputs.nixpkgs;
+      registry.nixpkgs.flake = inputs.nixpkgs;
       gc.automatic = true;
       optimise.automatic = true;
       settings = {

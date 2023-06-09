@@ -121,9 +121,9 @@ in {
             statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs";
             colors = {
               statusline = "#ffffff";
-              background = "#323232";
+              background = "#323232FA";
               inactiveWorkspace = {
-                background = "#323232";
+                background = "#323232FA";
                 border = "#323232";
                 text = "#5c5c5c";
               };

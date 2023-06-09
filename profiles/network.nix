@@ -58,5 +58,5 @@
     #networkmanager.dns = "none";
     useDHCP = false;
   };
-  #services.resolved.fallbackDns = config.networking.nameservers;
+  services.resolved.fallbackDns = config.networking.nameservers;
 }

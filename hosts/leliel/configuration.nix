@@ -27,11 +27,16 @@
     networking = {
       hostName = "leliel";
     };
-    services.kanata.keyboards.colemak.devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" ];
+    services.kanata.keyboards.colemak.devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" "pci-0000:00:1f.4-serio-2-event-mouse" ];
     networking.firewall.checkReversePath = "loose";
+    systemd.services.NetworkManager-wait-online.enable = false;
+    boot.plymouth.enable = true;
     networking.nftables.enable = true;
     networking.wireguard.enable = true;
     services.mullvad-vpn.enable = true;
+    services.upower.enable = true;
+    hardware.bluetooth.enable = true;
+    services.fprintd.enable = true;
     programs.sway.enable = true;
     programs.dconf.enable = true;
     home-manager.users.sam = {pkgs, ...} @ hm: {
@@ -95,7 +100,7 @@
       wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 26";
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
-        # ciscoPacketTracer8
+        ciscoPacketTracer8
         spotify
         rust-analyzer
         appimage-run

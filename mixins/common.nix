@@ -12,6 +12,7 @@
       please.wheelNeedsPassword = false;
     };
     services.resolved.enable = true;
+    services.resolved.dnssec = "false";
     services.timesyncd.enable = true;
     i18n.defaultLocale = "en_US.UTF-8";
     time.timeZone = "America/New_York";
