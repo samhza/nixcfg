@@ -39,6 +39,9 @@
     services.fprintd.enable = true;
     programs.sway.enable = true;
     programs.dconf.enable = true;
+    programs.steam = {
+      enable = true;
+    };
     home-manager.users.sam = {pkgs, ...} @ hm: {
       programs.foot.settings = {
         main.font = lib.mkForce "Iosevka Comfy Fixed:size=10";
@@ -100,6 +103,9 @@
       wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 26";
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
+        go
+        rclone
+        chromium
         ciscoPacketTracer8
         spotify
         rust-analyzer
@@ -168,6 +174,12 @@
         nix-direnv.enable = true;
       };
     };
+    # throawaway
+    services.postgresql = {
+      enable = true;
+      package = pkgs.postgresql_14;
+    };
+    #/throwaway
 
     nixpkgs.config.allowUnfree = true;
 
@@ -175,6 +187,9 @@
 
     hardware.pulseaudio.enable = false;
     boot.loader.systemd-boot.consoleMode = "max";
+    boot.loader.systemd-boot.extraInstallCommands = ''
+      echo "reboot-for-bitlocker yes" >> /boot/loader/loader.conf
+    '';
     boot.kernelParams = [ "quiet" ];
     console.keyMap = "${pkgs.colemak-dh}/share/keymaps/i386/colemak/colemak_dh_ansi_us.map";
 

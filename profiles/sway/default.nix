@@ -52,6 +52,9 @@ in {
       sel
       slurp
       wf-recorder
+      pamixer
+      pavucontrol
+      playerctl
       font-awesome
     ];
     home.sessionVariables = {
@@ -238,15 +241,15 @@ in {
         }
 
         bindsym $mod+p exec passmenu $menu_args
-        bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-        bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-        bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-        bindsym --locked XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+        bindsym --locked XF86AudioMute exec ${pkgs.pamixer}/bin/pamixer -t
+        bindsym --locked XF86AudioLowerVolume exec ${pkgs.pamixer}/bin/pamixer -d 5
+        bindsym --locked XF86AudioRaiseVolume exec ${pkgs.pamixer}/bin/pamixer -i 5
+        bindsym --locked XF86AudioMicMute exec ${pkgs.pamixer}/bin/pamixer --default-source -t
 
-        bindsym --locked XF86AudioNext exec playerctl next
-        bindsym --locked XF86AudioPlay exec playerctl play-pause
-        bindsym --locked XF86AudioPrev exec playerctl previous
-        bindsym --locked XF86AudioStop exec playerctl stop
+        bindsym --locked XF86AudioNext exec ${pkgs.playerctl}/bin/playerctl next
+        bindsym --locked XF86AudioPlay exec ${pkgs.playerctl}/bin/playerctl play-pause
+        bindsym --locked XF86AudioPrev exec ${pkgs.playerctl}/bin/playerctl previous
+        bindsym --locked XF86AudioStop exec ${pkgs.playerctl}/bin/playerctl stop
 
         for_window [app_id="^menu$"] floating enable, border none
         for_window [app_id="mpv"] sticky enable

@@ -29,7 +29,7 @@
 
   boot.initrd.luks.devices = {
     root = {
-      device = "/dev/nvme0n1p3";
+      device = "/dev/disk/by-uuid/8bf11f57-fdc9-4a98-b5a2-c9b7f8102ffd";
       preLVM = true;
       allowDiscards = true;
     };
