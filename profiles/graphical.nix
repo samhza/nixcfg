@@ -24,8 +24,10 @@ in {
           vo = "wlshm";
         };
         bindings = {
-          "a" = "playlist-prev";
-          "r" = "playlist-next";
+          "t" = "playlist-prev";
+          "s" = "playlist-next";
+          "r" = "seek 4";
+          "a" = "seek -5";
         };
       };
       home.packages = with pkgs; [

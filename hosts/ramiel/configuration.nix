@@ -16,9 +16,6 @@ in
     ../../mixins/tailscale.nix
     ../../mixins/esammy.nix
     ../../mixins/musicbot.nix
-    ../../mixins/helix.nix
-    ../../mixins/gnupg.nix
-    ../../mixins/code-server.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
   config = {
@@ -41,7 +38,6 @@ in
       defaults.email = "sam@samhza.com";
       certs."samhza.com" = {
         dnsProvider = "cloudflare";
-        extraDomainNames = ["proxy.samhza.com"];
         credentialsFile = config.age.secrets."cloudflare-samhza-com-creds".path;
       };
       certs."goresh.it" = {
@@ -53,10 +49,7 @@ in
     systemd.services.nginx.preStart = ''
       mkdir -p /tmp/{hls,dash}
     '';
-    programs.direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-    };
+
     # required for passforios
     # https://github.com/mssun/passforios/issues/624
     services.openssh.settings.Macs = [
@@ -78,20 +71,6 @@ in
           };
           locations."/u/".root = "/var/www";
           locations."/r/place".root = "/var/www";
-      };
-      virtualHosts."proxy.samhza.com" = {
-          useACMEHost = "samhza.com";
-          forceSSL = true;
-          locations."/" = {
-            proxyPass = "http://localhost:4444/";
-            proxyWebsockets = true;
-            extraConfig = ''
-              proxy_set_header Host $host;
-              proxy_set_header Upgrade $http_upgrade;
-              proxy_set_header Connection upgrade;
-              proxy_set_header Accept-Encoding gzip;
-            '';
-          };
       };
       virtualHosts."goresh.it" = {
           useACMEHost = "goresh.it";
@@ -139,6 +118,5 @@ in
     boot.initrd.kernelModules = [ "nvme" ];
     fileSystems."/" = { device = "/dev/sda1"; fsType = "ext4"; };
     system.stateVersion = "22.11";
-    nixpkgs.config.allowUnfree = true;
   };
 }
