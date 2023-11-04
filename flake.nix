@@ -12,6 +12,7 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     helix.url = "github:helix-editor/helix/23.03";
+    vscode-server = { url = "github:nix-community/nixos-vscode-server"; inputs."nixpkgs".follows = "nixpkgs"; };
     site = {
       url = "github:samhza/samhza.com";
       inputs.nixpkgs.follows = "nixpkgs";

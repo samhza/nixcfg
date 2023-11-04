@@ -103,10 +103,12 @@
       wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 26";
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
+        rlwrap
+        zathura
+        ghostscript
         go
         rclone
         chromium
-        ciscoPacketTracer8
         spotify
         rust-analyzer
         appimage-run
