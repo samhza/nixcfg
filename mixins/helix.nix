@@ -41,7 +41,6 @@ in
               space = spc;
               C-w = window;
               C-3 = window;
-              t = window;
             };
             window = {
               n="jump_view_down";

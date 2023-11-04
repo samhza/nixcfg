@@ -13,6 +13,7 @@
     ../../profiles/graphical.nix
     ../../profiles/sway
     ../../mixins/greetd.nix
+    # ../../profiles/kde
     ../../mixins/pipewire.nix
     ../../mixins/gtk.nix
     ../../mixins/kanata.nix

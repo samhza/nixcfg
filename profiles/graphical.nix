@@ -24,8 +24,8 @@ in {
           vo = "wlshm";
         };
         bindings = {
-          "t" = "playlist-prev";
-          "s" = "playlist-next";
+          "s" = "playlist-prev";
+          "t" = "playlist-next";
           "r" = "seek 4";
           "a" = "seek -5";
         };
