@@ -5,12 +5,12 @@
 }: let
   user = "sam";
   patchedSway = pkgs.sway;
-  users.users.greeter.packages = [patchedSway pkgs.apple-cursor];
+  users.users.greeter.packages = [patchedSway pkgs.apple-cursor pkgs.systemd];
   swayConfig = pkgs.writeText "greetd-sway-config" ''
     seat "*" {
       xcursor_theme macOS-BigSur-White 26
     }
-    exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+    exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK NIXOS_OZONE_WL
     exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s ${pkgs.gnome.gnome-themes-extra}/share/themes/Adwaita-dark/gtk-3.0/gtk.css; swaymsg exit"
     bindsym Mod4+shift+e exec swaynag \
       -t warning \

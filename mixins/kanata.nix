@@ -39,7 +39,7 @@
       (deflayer extend
         lrld @cmk @qwe _    _    _    _    _    _    _    _    _    _    _    
         _    [    ]    @lbr @rbr _    esc  bspc home end  _    _    _    _
-        _    @lan @ran @lpr @rpr 5    7    down up   rght pgup _    _    
+        _    @lan @ran @lpr @rpr 5    esc  down up   rght pgup _    _    
         _    1    2    3    4    6    pgdn left 8    9    0    _    
         _    _    _              _              _    _    _)
 

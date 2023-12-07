@@ -146,12 +146,12 @@
         userEmail = "sam@samhza.com";
         enable = true;
         extraConfig.core.excludesfile = "~/.config/git/ignore";
-        ignores = [
-          "flake.nix"
-          "flake.lock"
-          ".direnv"
-          ".envrc"
-        ];
+        # ignores = [
+        #   "flake.nix"
+        #   "flake.lock"
+        #   ".direnv"
+        #   ".envrc"
+        # ];
       };
 
       nixpkgs.config = {allowUnfree = true;};
@@ -183,6 +183,11 @@
       package = pkgs.postgresql_14;
     };
     #/throwaway
+
+    services.undervolt = {
+      coreOffset = -90;
+      enable = true;
+    };
 
     nixpkgs.config.allowUnfree = true;
 

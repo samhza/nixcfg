@@ -33,7 +33,6 @@
   patchedSway = pkgs.sway;
 in {
   config = {
-    programs.sway.enable = true;
     security.pam.services.swaylock = {};
     xdg.portal.enable = true;
     xdg.portal.extraPortals = with pkgs;
@@ -98,15 +97,12 @@ in {
     };
     wayland.windowManager.sway = {
       enable = true;
-      systemd.enable = true; # beta
+      systemd.enable = true;
       wrapperFeatures = {
-        # base = false; # this should be the default (dbus activation, not sure where XDG_CURRENT_DESKTOP comes from)
-        gtk = true; # I think this is also the default...
+        base = false;
+        gtk = true;
       };
       
-      extraSessionCommands = ''
-        . "${hm.config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
-      '';      
       config = rec {
         fonts = {
           names = ["Iosevka Comfy Fixed"];
@@ -201,16 +197,18 @@ in {
         input = {
           "type:keyboard" = {
             xkb_layout = "us";
-            #xkb_variant = "colemak_dh";
-            #xkb_options = "altwin:swap_lalt_lwin,caps:backspace";
+            # this is managed in mixins/kanata.nix
+            # xkb_variant = "colemak_dh";
+            # xkb_options = "altwin:swap_lalt_lwin,caps:backspace";
           };
           "type:touchpad" = {
             tap = "enabled";
+            natural_scroll = "enabled";
           };
         };
       };
       extraConfig = ''
-        exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+        exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE NIXOS_OZONE_WL; ${pkgs.systemd}/bin/systemctl --user start sway-session.target"
         exec ${pkgs.swayidle}/bin/swayidle -w \
         	timeout 300 '${pkgs.swaylock}/bin/swaylock -f -c 000000' \
         	timeout 600 'swaymsg "output * dpms off"' \
@@ -271,8 +269,6 @@ in {
         exec ${pkgs.mako}/bin/mako >/tmp/mako.log 2>&1
         exec_always kanshi >/tmp/kanshi.log 2>&1
         
-
-
         include /etc/sway/d/*
       '';
     };

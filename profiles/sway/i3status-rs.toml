@@ -28,7 +28,7 @@ block = "load"
 [[block]]
 block = "battery"
 interval = 10
-#format = "$percentage $time"
+format = "$icon $percentage $time"
 
 [[block]]
 block = "sound"
