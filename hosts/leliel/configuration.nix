@@ -12,7 +12,7 @@
     ../../profiles/network.nix
     ../../profiles/graphical.nix
     ../../profiles/sway
-    ../../mixins/greetd.nix
+    # ../../mixins/greetd.nix
     # ../../profiles/kde
     ../../mixins/pipewire.nix
     ../../mixins/gtk.nix
@@ -45,7 +45,7 @@
     };
     home-manager.users.sam = {pkgs, ...} @ hm: {
       programs.foot.settings = {
-        main.font = lib.mkForce "Iosevka Comfy Fixed:size=10";
+        main.font = lib.mkForce "Iosevka Comfy Fixed:size=9";
         colors = {
           foreground = "dcdccc";
           background = "111111";
@@ -104,6 +104,7 @@
       wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 26";
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
+        (inputs.nix-matlab.packages.x86_64-linux.matlab)
         rlwrap
         zathura
         ghostscript

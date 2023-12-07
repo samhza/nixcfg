@@ -9,6 +9,8 @@
     nixpkgs-wayland = { url = "github:nix-community/nixpkgs-wayland/master"; inputs."nixpkgs".follows = "nixpkgs"; };
     agenix = { url = "github:ryantm/agenix"; inputs."nixpkgs".follows = "nixpkgs"; };
     jj.url = "github:martinvonz/jj";
+    nix-matlab.url = "gitlab:doronbehar/nix-matlab";
+    nix-matlab.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     helix.url = "github:helix-editor/helix/23.03";
