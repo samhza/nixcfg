@@ -43,6 +43,9 @@
     programs.steam = {
       enable = true;
     };
+    systemd.sleep.extraConfig = "HibernateDelaySec=1h";
+    services.logind.lidSwitch = "suspend-then-hibernate";
+    services.logind.lidSwitchDocked = "ignore";
     home-manager.users.sam = {pkgs, ...} @ hm: {
       programs.foot.settings = {
         main.font = lib.mkForce "Iosevka Comfy Fixed:size=9";
@@ -96,7 +99,7 @@
         };
         Install.WantedBy = ["default.target"];
       };
-      
+
       home.sessionVariables = {
         EDITOR = "hx";
         SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
@@ -104,7 +107,7 @@
       wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 26";
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
-        (inputs.nix-matlab.packages.x86_64-linux.matlab)
+        # (inputs.nix-matlab.packages.x86_64-linux.matlab)
         rlwrap
         zathura
         ghostscript
@@ -178,13 +181,6 @@
         nix-direnv.enable = true;
       };
     };
-    # throawaway
-    services.postgresql = {
-      enable = true;
-      package = pkgs.postgresql_14;
-    };
-    #/throwaway
-
     services.undervolt = {
       coreOffset = -90;
       enable = true;
@@ -207,6 +203,6 @@
 
     hardware.enableRedistributableFirmware = true;
 
-    system.stateVersion = "23.05";
+    system.stateVersion = "23.11";
   };
 }

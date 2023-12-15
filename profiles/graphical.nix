@@ -62,7 +62,7 @@ in {
           main = {
             term = "xterm-256color";
             font = "Iosevka Comfy Fixed:size=12";
-            dpi-aware = "yes";
+            # dpi-aware = "yes";
           };
         };
       };
