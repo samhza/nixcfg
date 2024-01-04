@@ -97,7 +97,7 @@ in
                 chunk_size 4096;
                 listen 1935; 
                 application live {
-                    allow publish 127.0.0.1;
+                    allow publish 173.2.161.197;
                     live on;
                     record off;
                     dash on; 
