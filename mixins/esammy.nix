@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }: let
   esammy =
@@ -13,12 +14,7 @@
       }:
         buildGoModule rec {
           name = "esammy";
-          src = pkgs.fetchFromGitHub {
-            owner = "samhza";
-            repo = "esammy";
-            rev = "04823d1805e386e79a9a11334c5154ddd26cef7b";
-            sha256 = "sha256-sUJSkpmkfQ6v7dI6ASpNZGq6oObFXQTL23qa1G59GjQ=";
-          };
+          src = inputs.esammy;
 
           vendorSha256 = "sha256-AOg02xczMnukoHCUgJLxYchRkg6mN+zCIgaV/BfkJpM=";
           meta = with lib; {

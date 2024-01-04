@@ -14,6 +14,7 @@
     ../../profiles/sway
     # ../../mixins/greetd.nix
     # ../../profiles/kde
+    ../../mixins/esammy.nix
     ../../mixins/pipewire.nix
     ../../mixins/gtk.nix
     ../../mixins/kanata.nix
@@ -100,6 +101,9 @@
         Install.WantedBy = ["default.target"];
       };
 
+      nixpkgs.config.permittedInsecurePackages = [
+        "electron-25.9.0"
+      ];
       home.sessionVariables = {
         EDITOR = "hx";
         SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";

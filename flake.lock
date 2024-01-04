@@ -132,6 +132,23 @@
         "type": "github"
       }
     },
+    "esammy": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704397118,
+        "narHash": "sha256-948mCYIgZi2NoKY/E8sQTy83iyGHPlZxhPGGoaqgIAI=",
+        "owner": "samhza",
+        "repo": "esammy",
+        "rev": "1a9d8ff1f9f46cc8a7df0ddf805eb06e11ff2dc7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "samhza",
+        "ref": "trunk",
+        "repo": "esammy",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "locked": {
         "lastModified": 1688025799,
@@ -619,6 +636,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "esammy": "esammy",
         "helix": "helix",
         "home-manager": "home-manager_2",
         "impermanence": "impermanence",
