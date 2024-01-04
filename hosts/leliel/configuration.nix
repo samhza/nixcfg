@@ -118,7 +118,7 @@
         rust-analyzer
         appimage-run
         apple-cursor
-        (pkgs.callPackage ../../pkgs/beeper-desktop.nix {} )
+        # (pkgs.callPackage ../../pkgs/beeper-desktop.nix {} )
         (pkgs.vivaldi.override {
           commandLineArgs = ["--force-dark-mode"];
         })
