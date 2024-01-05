@@ -16,7 +16,7 @@
           name = "esammy";
           src = inputs.esammy;
 
-          vendorSha256 = "sha256-AOg02xczMnukoHCUgJLxYchRkg6mN+zCIgaV/BfkJpM=";
+          vendorHash = "sha256-AOg02xczMnukoHCUgJLxYchRkg6mN+zCIgaV/BfkJpM=";
           meta = with lib; {
             description = "discord meme bot";
             homepage = "https://github.com/samhza/esammy";
