@@ -112,6 +112,10 @@
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
         # (inputs.nix-matlab.packages.x86_64-linux.matlab)
+        nodejs
+        yt-dlp
+        python3
+        gopls
         rlwrap
         zathura
         ghostscript
@@ -149,6 +153,7 @@
         videos = "${homeDirectory}/videos";
       };
       programs.gh.enable = true;
+      programs.gh.settings.version = 1;
       programs.git = {
         userName = "Samuel Hernandez";
         userEmail = "sam@samhza.com";

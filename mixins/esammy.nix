@@ -16,7 +16,7 @@
           name = "esammy";
           src = inputs.esammy;
 
-          vendorHash = "sha256-AOg02xczMnukoHCUgJLxYchRkg6mN+zCIgaV/BfkJpM=";
+          vendorHash = "sha256-yZPxfrht2XPABI0CfRv62Ji0FVfFrTIIbLI3nbiFnws=";
           meta = with lib; {
             description = "discord meme bot";
             homepage = "https://github.com/samhza/esammy";
@@ -33,7 +33,7 @@ in {
     serviceConfig = {
       Type = "simple";
       DynamicUser = true;
-      Environment = ["PATH=${pkgs.ffmpeg-full}/bin:$PATH"];
+      Environment = ["PATH=${pkgs.ffmpeg-full}/bin:${pkgs.yt-dlp}/bin:$PATH"];
       LoadCredential = "esammy.toml:${config.age.secrets."esammy.toml".path}";
       ExecStart = "${esammy}/bin/esammy -config %d/esammy.toml";
     };

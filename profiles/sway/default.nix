@@ -193,6 +193,7 @@ in {
           "${modifier}+Shift+minus" = "move scratchpad";
           "${modifier}+minus" = "scratchpad show";
           "${modifier}+m" = "mode notifications";
+          "${modifier}+Alt+s" = "sticky toggle";
         };
         input = {
           "type:keyboard" = {

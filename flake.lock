@@ -135,11 +135,11 @@
     "esammy": {
       "flake": false,
       "locked": {
-        "lastModified": 1704440998,
-        "narHash": "sha256-nG7SInxfGMbmDpJBqwJnJKttCPrVPFJOupKnfLmn3Pc=",
+        "lastModified": 1704727456,
+        "narHash": "sha256-WvWoJag9CWuIIG9MHoLgM8DaEdKj8I9UFkiwqwl87M4=",
         "owner": "samhza",
         "repo": "esammy",
-        "rev": "a602bda5c74f8182d2d92faa79bd8e20bd0cb398",
+        "rev": "4087a7d71b9d19abe5b51a692f4bda7f977d4e22",
         "type": "github"
       },
       "original": {

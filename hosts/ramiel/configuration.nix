@@ -3,11 +3,49 @@
   lib,
   pkgs,
   modulesPath,
+  buildGoModule,
   inputs,
   ...
 }:
 let
+  # govanity = 
+  #   pkgs.runCommand "govanity"
+  #     {
+  #       src = ./govanity.go;
+  #       buildInputs = [ pkgs.go ];
+  #     } ''
+  #     export HOME=$(mktemp -d)
+  #     mkdir govanity
+  #     cp $src govanity
+  #     go build -o $out ./govanity
+  #   '';
+  # esammy =
+  #   pkgs.callPackage
+  #   (
+  #     {
+  #       buildGoModule,
+  #       fetchgit,
+  #     }:
+  #       buildGoModule rec {
+  #         name = "esammy";
+  #         src = inputs.esammy;
 
+  #         vendorHash = "sha256-yZPxfrht2XPABI0CfRv62Ji0FVfFrTIIbLI3nbiFnws=";
+  #         meta = with lib; {
+  #           description = "discord meme bot";
+  #           homepage = "https://github.com/samhza/esammy";
+  #           license = licenses.isc;
+  #         };
+  #       }
+  #   ) {};
+  govanity = pkgs.callPackage ({ buildGoPackage }: buildGoPackage rec {
+    name = "govanity";
+    goPackagePath = name;
+    src = lib.fileset.toSource {
+      root = ./.;
+      fileset = ./govanity.go;
+    };
+  } ) {};
 in
 {
   imports = [ 
@@ -50,6 +88,20 @@ in
       mkdir -p /tmp/{hls,dash}
     '';
 
+    systemd.services.govanity = {
+      description = "go vanity url";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "simple";
+        DynamicUser = true;
+        ExecStart = ''${govanity}/bin/govanity \
+          -addr :8082 \
+          -base-url samhza.com \
+          -import-url 'git https://github.com/samhza'
+        '';
+      };
+    };
+
     # required for passforios
     # https://github.com/mssun/passforios/issues/624
     services.openssh.settings.Macs = [
@@ -67,6 +119,13 @@ in
             return = "200 '<pre>email: sam@samhza.com'";
             extraConfig = ''
                types { } default_type "text/html; charset=utf-8";
+            '';
+          };
+          locations."/" = {
+            extraConfig = ''
+                if ($args ~* "go-get=1") {
+                    proxy_pass http://127.0.0.1:8082;
+                }            
             '';
           };
           locations."/u/".root = "/var/www";
