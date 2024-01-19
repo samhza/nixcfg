@@ -40,6 +40,7 @@
       lilith = mkSystem inputs.nixpkgs "x86_64-linux" "lilith";
       leliel = mkSystem inputs.nixpkgs "x86_64-linux" "leliel";
       ramiel = mkSystem inputs.nixpkgs "x86_64-linux" "ramiel";
+      test = mkSystem inputs.nixpkgs "arm64-linux" "leliel";
     };
 
     devShells.x86_64-linux.default = pkgs.mkShell {

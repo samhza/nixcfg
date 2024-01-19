@@ -109,12 +109,13 @@ in {
           style = "Regular";
           size = 11.0;
         };
+        output."eDP-1".scale = "1.75";
         bars = [
           {
             fonts = {
               names = ["Iosevka Comfy Fixed" "Font Awesome 6 Free"];
               style = "Regular";
-              size = 11.0;
+              size = 10.0;
             };
             position = "top";
             statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs";

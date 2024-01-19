@@ -14,7 +14,6 @@
     ../../profiles/sway
     # ../../mixins/greetd.nix
     # ../../profiles/kde
-    ../../mixins/esammy.nix
     ../../mixins/pipewire.nix
     ../../mixins/gtk.nix
     ../../mixins/kanata.nix
@@ -30,8 +29,26 @@
       hostName = "leliel";
     };
     services.kanata.keyboards.colemak.devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" "pci-0000:00:1f.4-serio-2-event-mouse" ];
+    services.ipfs.enable = true;
     networking.firewall.checkReversePath = "loose";
     systemd.services.NetworkManager-wait-online.enable = false;
+    systemd.services."failure-handler@" = {
+      description ="failure handler for %i";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "/home/sam/failurehandler %i";
+      };
+    };
+    systemd.packages = [
+      (pkgs.runCommandNoCC "toplevel-overrides.conf" {
+        preferLocalBuild = true;
+        allowSubstitutes = false;
+      } ''
+        mkdir -p $out/etc/systemd/system/service.d/
+        echo "[Unit]" >> $out/etc/systemd/system/service.d/toplevel-overrides.conf
+        echo "OnFailure=failure-handler@%N.service" >> $out/etc/systemd/system/service.d/toplevel-overrides.conf
+      '')
+    ];
     boot.plymouth.enable = true;
     networking.nftables.enable = true;
     networking.wireguard.enable = true;
@@ -49,7 +66,7 @@
     services.logind.lidSwitchDocked = "ignore";
     home-manager.users.sam = {pkgs, ...} @ hm: {
       programs.foot.settings = {
-        main.font = lib.mkForce "Iosevka Comfy Fixed:size=9";
+        main.font = lib.mkForce "Iosevka Comfy Fixed:size=10";
         colors = {
           foreground = "dcdccc";
           background = "111111";
@@ -111,6 +128,10 @@
       wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 26";
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
+        fzf
+        jq
+        gopls
+        gotools
         # (inputs.nix-matlab.packages.x86_64-linux.matlab)
         nodejs
         yt-dlp
