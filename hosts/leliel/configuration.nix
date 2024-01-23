@@ -13,13 +13,14 @@
     ../../profiles/graphical.nix
     ../../profiles/sway
     # ../../mixins/greetd.nix
-    # ../../profiles/kde
+    ../../profiles/kde
     ../../mixins/pipewire.nix
     ../../mixins/gtk.nix
     ../../mixins/kanata.nix
     ../../mixins/gnupg.nix
     ../../mixins/helix.nix
     ../../mixins/tailscale.nix
+    ../../mixins/easyeffects.nix
     ./hardware-configuration.nix
 
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-6th-gen
@@ -28,6 +29,14 @@
     networking = {
       hostName = "leliel";
     };
+    services.tlp = {
+      enable = true;
+      settings = {
+        START_CHARGE_THRESH_BAT0=50;
+        STOP_CHARGE_THRESH_BAT0=80;
+      };
+    };
+    services.power-profiles-daemon.enable = false;
     services.kanata.keyboards.colemak.devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" "pci-0000:00:1f.4-serio-2-event-mouse" ];
     services.ipfs.enable = true;
     networking.firewall.checkReversePath = "loose";

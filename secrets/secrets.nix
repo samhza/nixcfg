@@ -12,5 +12,5 @@ in
   "musicbot-config.txt.age".publicKeys = [sam leliel ramiel];
   "cloudflare-samhza-com-creds.age".publicKeys = [sam ramiel];
   "iwantmyname-creds.age".publicKeys = [sam ramiel];
-  "spotify-password.age".publicKeys = [sam lilith];
+  "spotify-password.age".publicKeys = [sam leliel];
 }
