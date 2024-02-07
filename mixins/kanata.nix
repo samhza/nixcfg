@@ -9,10 +9,12 @@
         lsft z    x    c    v    b    n    m    ,    .    /    rsft
         lctl lmet lalt           spc            ralt rmet rctl
       )
-
+      (defalias
+        tb (tap-hold-press 1 200 tab lctrl)
+      )
       (deflayer colemak-dh
         grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-        tab  q    w    f    p    b    j    l    u    y    ;    [    ]    \
+        @tb  q    w    f    p    b    j    l    u    y    ;    [    ]    \
         @ext a    r    s    t    g    m    n    e    i    o    '    ret
         lsft x    c    d    v    z    k    h    ,    .    /    rsft
         lctl lalt lmet           spc            ralt rmet rctl
@@ -41,7 +43,7 @@
         _    [    ]    @lbr @rbr _    esc  bspc home end  _    _    _    _
         _    @lan @ran @lpr @rpr 5    esc  down up   rght pgup _    _    
         _    1    2    3    4    6    pgdn left 8    9    0    _    
-        _    _    _              _              _    _    _)
+        _    _    C-S-tab            C-tab              _    _    _)
 
     '';
   };

@@ -13,6 +13,16 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  fileSystems."/home/sam/tmp" = {
+    fsType = "tmpfs";
+    options = [ "nosuid" "nodev" "size=16G" ];
+  };
+
+  fileSystems."/home/sam/.cache" = {
+    fsType = "tmpfs";
+    options = [ "nosuid" "nodev" "size=16G" ];
+  };
+
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/a8acc934-27d6-4fe2-ab81-646e98e8ac30";
       fsType = "ext4";

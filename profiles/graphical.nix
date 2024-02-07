@@ -33,6 +33,9 @@ in {
       home.packages = with pkgs; [
         iosevka-comfy.comfy-fixed
         iosevka-comfy.comfy-duo
+        go-font
+        (nerdfonts.override { fonts = ["GoMono"]; })
+        powerline-fonts
         wl-clipboard
         gnome3.adwaita-icon-theme
         noto-fonts
@@ -41,8 +44,8 @@ in {
         corefonts
       ];
       gtk = {
-        theme.package = pkgs.gnome.gnome-themes-extra;
-        theme.name = "Adwaita-dark";
+        theme.package = pkgs.arc-theme;
+        theme.name = "Arc-dark";
         enable = true;
         gtk3.extraConfig = {
           gtk-application-prefer-dark-theme = 1;

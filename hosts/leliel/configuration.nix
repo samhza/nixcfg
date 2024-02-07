@@ -13,7 +13,7 @@
     ../../profiles/graphical.nix
     ../../profiles/sway
     # ../../mixins/greetd.nix
-    ../../profiles/kde
+    # ../../profiles/kde
     ../../mixins/pipewire.nix
     ../../mixins/gtk.nix
     ../../mixins/kanata.nix
@@ -21,11 +21,15 @@
     ../../mixins/helix.nix
     ../../mixins/tailscale.nix
     ../../mixins/easyeffects.nix
+    ../../mixins/libvirtd.nix
+    ../../mixins/libvirt.nix
     ./hardware-configuration.nix
 
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-6th-gen
   ];
   config = {
+    virtualisation.docker.enable = true;
+    users.users.sam.extraGroups = [ "docker" ];
     networking = {
       hostName = "leliel";
     };
@@ -36,9 +40,9 @@
         STOP_CHARGE_THRESH_BAT0=80;
       };
     };
+    virtualisation.libvirtd.enable = true;
     services.power-profiles-daemon.enable = false;
-    services.kanata.keyboards.colemak.devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" "pci-0000:00:1f.4-serio-2-event-mouse" ];
-    services.ipfs.enable = true;
+    services.kanata.keyboards.colemak.devices = [ "/dev/input/by-path/platform-i8042-serio-0-event-kbd" ]; #"/dev/input/by-path/pci-0000:00:1f.4-serio-2-event-mouse" ];
     networking.firewall.checkReversePath = "loose";
     systemd.services.NetworkManager-wait-online.enable = false;
     systemd.services."failure-handler@" = {
@@ -65,17 +69,48 @@
     services.upower.enable = true;
     hardware.bluetooth.enable = true;
     services.fprintd.enable = true;
+    services.gpm.enable = true;
     programs.sway.enable = true;
     programs.dconf.enable = true;
     programs.steam = {
       enable = true;
+      extraCompatPackages = [
+        inputs.nix-gaming.packages.${pkgs.system}.proton-ge
+      ];
     };
+    services.udev.packages = with pkgs; [
+        via
+    ];
     systemd.sleep.extraConfig = "HibernateDelaySec=1h";
     services.logind.lidSwitch = "suspend-then-hibernate";
     services.logind.lidSwitchDocked = "ignore";
+    services.tumbler.enable = true;
     home-manager.users.sam = {pkgs, ...} @ hm: {
+      programs.mbsync.enable = true;
+      programs.msmtp.enable = true;
+      services.imapnotify.enable = true;
+      accounts.email.accounts.migadu = {
+        address = "sam@samhza.com";
+        userName = "sam@samhza.com";
+        imap.host = "imap.migadu.com";
+        smtp.host = "smtp.migadu.com";
+        primary = true;
+        mbsync = {
+          enable = true;
+          create = "maildir";
+          subFolders = "Maildir++";
+        };
+        imapnotify = {
+          # enable = true;
+          onNotify = "${pkgs.isync}/bin/mbsync migadu";
+        };
+        msmtp.enable = true;
+        realName = "Samuel Hernandez";
+        passwordCommand = "pass show email";
+      };
       programs.foot.settings = {
-        main.font = lib.mkForce "Iosevka Comfy Fixed:size=10";
+        # main.font = lib.mkForce "Iosevka Comfy Fixed:size=10";
+        main.font = lib.mkForce "Go Mono:size=10";
         colors = {
           foreground = "dcdccc";
           background = "111111";
@@ -135,8 +170,45 @@
         SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
       };
       wayland.windowManager.sway.config.seat."*".xcursor_theme ="macOS-BigSur-White 26";
+      services.wlsunset = {
+        latitude = "40.8";
+        longitude = "-74.0";
+        enable = true;
+      };
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
+        jdt-language-server
+        gdb
+        xxd
+        gcc
+        rustup
+        file
+        moreutils
+        vscode
+        libreoffice
+        pv
+        dislocker
+        ntfs3g
+        vial
+        wev
+        imv
+        gimp
+        zip
+        strace
+	imagemagick
+        whisper-ctranslate2
+        python311Packages.faster-whisper
+        delve
+        mupdf
+        libtiff
+        scantailor
+        entr
+        backblaze-b2
+        jujutsu
+        aerc
+        himalaya
+        kakoune
+        kak-lsp
         fzf
         jq
         gopls
@@ -153,7 +225,6 @@
         rclone
         chromium
         spotify
-        rust-analyzer
         appimage-run
         apple-cursor
         # (pkgs.callPackage ../../pkgs/beeper-desktop.nix {} )
@@ -211,15 +282,12 @@
         enable = true;
         browsers = ["chrome"];
       };
-      programs.nix-index = {
-        enable = true;
-        enableFishIntegration = true;
-      };
       programs.direnv = {
         enable = true;
         nix-direnv.enable = true;
       };
     };
+    programs.java.enable = true;
     services.undervolt = {
       coreOffset = -90;
       enable = true;

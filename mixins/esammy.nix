@@ -10,7 +10,6 @@
     (
       {
         buildGoModule,
-        fetchgit,
       }:
         buildGoModule rec {
           name = "esammy";

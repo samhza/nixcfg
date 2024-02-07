@@ -38,10 +38,19 @@ in {
     xdg.portal.extraPortals = with pkgs;
     [
       xdg-desktop-portal-wlr
-      (xdg-desktop-portal-gtk.override {
-        buildPortalsInGnome = false;
-      })
+      xdg-desktop-portal-gtk
     ];
+    xdg.portal.config = {
+      common = {
+        default = [ "gtk" ];
+      };
+      sway = {
+        default = [ "gtk" ];
+        "org.freedesktop.impl.portal.Screencast" = [ "wlr" ];
+        "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
+      };
+    };
+
     home-manager.users.sam = { pkgs, config, ...}@hm: {
 
     xdg.configFile."i3status-rust/config.toml".source = ./i3status-rs.toml;
@@ -57,6 +66,7 @@ in {
       font-awesome
     ];
     home.sessionVariables = {
+      "XDG_CURRENT_DESKTOP" = "sway";
       "NIXOS_OZONE_WL" = "1";
     };
     services.swayidle = let
@@ -105,7 +115,8 @@ in {
       
       config = rec {
         fonts = {
-          names = ["Iosevka Comfy Fixed"];
+          names = ["Go Mono"];
+          # names = ["Iosevka Comfy Fixed"];
           style = "Regular";
           size = 11.0;
         };
@@ -113,7 +124,8 @@ in {
         bars = [
           {
             fonts = {
-              names = ["Iosevka Comfy Fixed" "Font Awesome 6 Free"];
+              names = ["Go Mono For Powerline" "Font Awesome 6 Free"];
+              # names = ["Iosevka Comfy Fixed" "Font Awesome 6 Free"];
               style = "Regular";
               size = 10.0;
             };
@@ -230,7 +242,7 @@ in {
         hide_edge_borders smart
         smart_borders on
 
-        output * bg ~/tmp/graveyard.png fill
+        output * bg ~/images/wallpaper/graveyard.png fill
 
         floating_modifier $mod normal
         mode notifications {
@@ -262,9 +274,9 @@ in {
         bindsym XF86MonBrightnessUp exec ${pkgs.light}/bin/light -A 5
         bindsym XF86MonBrightnessDown exec ${pkgs.light}/bin/light -U 5
 
-        bindsym Print exec ${pkgs.grim}/bin/grim - | tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s_grim.png') | wl-copy
-        bindsym Shift+Print exec ${pkgs.grim}/bin/grim -g "$(${sel}/bin/sel)" - | tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s_grim.png') | wl-copy
-        bindsym Ctrl+Print exec ${pkgs.grim}/bin/grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')" - |tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s_grim.png') | wl-copy
+        bindsym Print exec ${pkgs.grim}/bin/grim - | tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s.png') | wl-copy
+        bindsym Shift+Print exec ${pkgs.grim}/bin/grim -g "$(${sel}/bin/sel)" - | tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s.png') | wl-copy
+        bindsym Ctrl+Print exec ${pkgs.grim}/bin/grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')" - |tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s.png') | wl-copy
 
         bindsym $mod+l exec ${pkgs.swaylock}/bin/swaylock -c 070D0D
 

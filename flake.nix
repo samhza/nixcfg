@@ -13,10 +13,14 @@
     # nix-matlab.inputs.nixpkgs.follows = "nixpkgs";
     esammy.url = "github:samhza/esammy/trunk";
     esammy.flake = false;
+    govanity.url = "github:samhza/govanity/trunk";
+    govanity.flake = false;
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     helix.url = "github:helix-editor/helix/23.03";
     vscode-server = { url = "github:nix-community/nixos-vscode-server"; inputs."nixpkgs".follows = "nixpkgs"; };
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.3.0";
+    nix-gaming.url = "github:fufexan/nix-gaming";
     site = {
       url = "github:samhza/samhza.com";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -40,6 +44,11 @@
       lilith = mkSystem inputs.nixpkgs "x86_64-linux" "lilith";
       leliel = mkSystem inputs.nixpkgs "x86_64-linux" "leliel";
       ramiel = mkSystem inputs.nixpkgs "x86_64-linux" "ramiel";
+      installer = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [./installer.nix];
+        specialArgs = {inherit inputs;};
+      };
       test = mkSystem inputs.nixpkgs "arm64-linux" "leliel";
     };
 

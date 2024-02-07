@@ -4,10 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
+	"os"
 	"path"
 	"strings"
-	"time"
 )
 
 type server struct {
@@ -21,14 +22,19 @@ func init() {
 
 func main() {
 	s := &server{}
-	server := &http.Server{Handler: s}
-	timeout := flag.Int("timeout", 15, "http server read timeout in seconds")
-	flag.StringVar(&server.Addr, "addr", ":http", "http server listen addr")
+	//server := &http.Server{Handler: s}
+	//flag.StringVar(&server.Addr, "addr", ":http", "http server listen addr")
 	flag.StringVar(&s.BaseURL, "base-url", "", "base url")
 	flag.StringVar(&s.ImportURL, "import-url", "", "import url")
 	flag.Parse()
-	server.ReadTimeout = time.Duration(*timeout) * time.Second
-	log.Fatalln(server.ListenAndServe())
+	l, err := net.Listen("unix", "/run/govanity/govanity.sock")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	if err := os.Chmod("/run/govanity/govanity.sock", 0777); err != nil {
+		log.Fatalln(err)
+	}
+	log.Fatalln(http.Serve(l, s))
 }
 
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {

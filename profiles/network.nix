@@ -13,14 +13,12 @@
         X11Forwarding no
         AllowAgentForwarding no
         AllowStreamLocalForwarding no
-        AuthenticationMethods publickey
+        AuthenticationMethods publickey keyboard-interactive
         StreamLocalBindUnlink yes
         AllowUsers sam
       '';
     };
   };
-
-  security.pam.enableSSHAgentAuth = true;
 
   services.dnscrypt-proxy2 = {
     #enable = true;

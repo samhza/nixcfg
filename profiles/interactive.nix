@@ -34,9 +34,14 @@
         '';
         shellAliases = {
           gc = "git clone";
-          l = "ls -alh";
-          nr = "nix run nixpkgs#$1";
-          ns = "nix shell nixpkgs#$1";
+          l = "ls -alh --group-directories-first";
+        };
+        functions = {
+          nd = "nix develop -c $SHELL";
+          nr = "nix run nixpkgs#$argv[1] -- $argv[2..-1]";
+          ns = "nix shell (for prog in $argv; echo \"nixpkgs#$prog\"; end)";
+          nsw = "nix shell (for prog in $argv; echo \"weekly#$prog\"; end)";
+          nrw = "nix shell (for prog in $argv; echo \"weekly#$prog\"; end)";
         };
         functions = {
           sb.body = "sudo nixos-rebuild build --flake ~/sources/nixcfg#(hostname)";

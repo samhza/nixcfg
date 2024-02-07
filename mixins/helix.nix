@@ -24,8 +24,6 @@ in
           keys = let
             motion = {
               I = "insert_at_line_start";
-              a = "insert_at_line_end";
-              A = "append_mode";
               E = "keep_selections";
               A-E = "remove_selections";
               j = "move_next_word_end";
