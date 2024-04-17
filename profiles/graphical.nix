@@ -34,7 +34,6 @@ in {
         iosevka-comfy.comfy-fixed
         iosevka-comfy.comfy-duo
         go-font
-        (nerdfonts.override { fonts = ["GoMono"]; })
         powerline-fonts
         wl-clipboard
         gnome3.adwaita-icon-theme

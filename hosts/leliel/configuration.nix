@@ -12,8 +12,6 @@
     ../../profiles/network.nix
     ../../profiles/graphical.nix
     ../../profiles/sway
-    # ../../mixins/greetd.nix
-    # ../../profiles/kde
     ../../mixins/pipewire.nix
     ../../mixins/gtk.nix
     ../../mixins/kanata.nix
@@ -85,7 +83,7 @@
     services.logind.lidSwitch = "suspend-then-hibernate";
     services.logind.lidSwitchDocked = "ignore";
     services.tumbler.enable = true;
-    home-manager.users.sam = {pkgs, ...} @ hm: {
+    home-manager.users.sam = {pkgs, ...}: {
       programs.mbsync.enable = true;
       programs.msmtp.enable = true;
       services.imapnotify.enable = true;
@@ -137,6 +135,7 @@
 
 
       systemd.user.services."logseq-sync" = {
+        
         Unit.Description = "sync logseq ~/knowledge";
         Service = {
           Type = "oneshot";
@@ -177,6 +176,10 @@
       };
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
+        restic
+        telegram-desktop
+        element-desktop
+        nil
         jdt-language-server
         gdb
         xxd
@@ -195,7 +198,7 @@
         gimp
         zip
         strace
-	imagemagick
+      	imagemagick
         whisper-ctranslate2
         python311Packages.faster-whisper
         delve
