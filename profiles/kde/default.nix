@@ -12,6 +12,7 @@
       enable = true;
       settings.General.DisplayServer = "Wayland";
     };
+    environment.systemPackages = [ pkgs.kio-fuse ];
     services.xserver.displayManager.defaultSession = "plasmawayland";
     services.xserver.displayManager.autoLogin.user = "sam";
     services.xserver.desktopManager.plasma5.enable = true;

@@ -199,6 +199,7 @@ in {
           "${modifier}+w" = "layout tabbed";
           "${modifier}+k" = "layout toggle split";
           "${modifier}+f" = "fullscreen";
+          "${modifier}+r" = "mode resize";
           "${modifier}+Shift+space" = "floating toggle";
           "${modifier}+t" = "focus mode_toggle";
           "${modifier}+a" = "focus parent";

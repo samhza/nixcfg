@@ -73,11 +73,7 @@ in
           forceSSL = true;
           root = inputs.site.outputs.packages.${pkgs.system}.static;
           locations."= /" = {
-            return = "404";
-            /*return = "200 '<pre>email: sam@samhza.com'";
-            extraConfig = ''
-               types { } default_type "text/html; charset=utf-8";
-            '';*/
+            return = "404 ''";
           };
           locations."/" = {
             extraConfig = ''
@@ -94,9 +90,6 @@ in
           };
           locations."/u/".root = "/var/www";
           #locations."/r/place".root = "/var/www";
-          extraConfig = ''
-            error_page 404 =404;
-          '';
       };
       virtualHosts."matrix.samhza.com" = {
         useACMEHost = "matrix.samhza.com";

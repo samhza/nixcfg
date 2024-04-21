@@ -73,7 +73,8 @@
     programs.steam = {
       enable = true;
       extraCompatPackages = [
-        inputs.nix-gaming.packages.${pkgs.system}.proton-ge
+        #inputs.nix-gaming.packages.${pkgs.system}.proton-ge
+        pkgs.proton-ge-bin
       ];
     };
     services.udev.packages = with pkgs; [
@@ -176,6 +177,18 @@
       };
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
       home.packages = with pkgs; [
+        (pkgs.vis.overrideAttrs (oa: {
+          src = fetchFromGitHub {
+            owner = "martanne";
+            repo = "vis";
+            rev = "1fc175627f3afe938be0b5daa6a864b281725fec";
+            sha256 = "sha256-dOiQ2SlZuvL+M4I3jF5wLfevlC0/kYYT7979ABDO204=";
+          };
+        }))
+        pdfgrep
+        poppler_utils
+        anki
+        neovim
         restic
         telegram-desktop
         element-desktop
@@ -263,12 +276,6 @@
         userEmail = "sam@samhza.com";
         enable = true;
         extraConfig.core.excludesfile = "~/.config/git/ignore";
-        # ignores = [
-        #   "flake.nix"
-        #   "flake.lock"
-        #   ".direnv"
-        #   ".envrc"
-        # ];
       };
 
       nixpkgs.config = {allowUnfree = true;};
