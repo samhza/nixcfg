@@ -5,6 +5,7 @@
     ../profiles/user.nix
   ];
   config = {
+    networking.domain = "samhza.com";
     security = {
       sudo.enable = true;
       sudo.wheelNeedsPassword = false;

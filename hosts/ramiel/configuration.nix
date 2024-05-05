@@ -24,6 +24,7 @@ in
     ../../mixins/esammy.nix
     ../../mixins/govanity.nix
     ../../mixins/musicbot.nix
+    ../../mixins/syncthing.nix
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
   config = {
@@ -50,6 +51,12 @@ in
       };
       certs."matrix.samhza.com" = certs."samhza.com";
       certs."ntfy.samhza.com" = certs."samhza.com";
+      certs."ramiel.samhza.com" = {
+        #figure out how to use inherit w this
+        dnsProvider = "cloudflare";
+        credentialsFile = config.age.secrets."cloudflare-samhza-com-creds".path;
+        domain = "*.ramiel.samhza.com";
+      };
       certs."goresh.it" = certs."samhza.com";
     };
     users.users.nginx.extraGroups = [ "acme" ];
@@ -244,7 +251,7 @@ in
     boot.cleanTmpDir = true;
     zramSwap.enable = true;
     networking.hostName = "ramiel";
-    networking.domain = "";
+    #networking.domain = "";
     boot.loader.grub.device = "/dev/sda";
     boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "xen_blkfront" "vmw_pvscsi" ];
     boot.initrd.kernelModules = [ "nvme" ];

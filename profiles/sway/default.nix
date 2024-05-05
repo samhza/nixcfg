@@ -243,7 +243,7 @@ in {
         hide_edge_borders smart
         smart_borders on
 
-        output * bg ~/images/wallpaper/graveyard.png fill
+        #output * bg ~/images/wallpaper/graveyard.png fill
 
         floating_modifier $mod normal
         mode notifications {

@@ -21,6 +21,7 @@
     ../../mixins/easyeffects.nix
     ../../mixins/libvirtd.nix
     ../../mixins/libvirt.nix
+    ../../mixins/syncthing.nix
     ./hardware-configuration.nix
 
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-6th-gen
@@ -66,7 +67,8 @@
     services.mullvad-vpn.enable = true;
     services.upower.enable = true;
     hardware.bluetooth.enable = true;
-    services.fprintd.enable = true;
+    # doesnt support my fingerprint reader
+    # services.fprintd.enable = true;
     services.gpm.enable = true;
     programs.sway.enable = true;
     programs.dconf.enable = true;
@@ -77,9 +79,9 @@
         pkgs.proton-ge-bin
       ];
     };
-    services.udev.packages = with pkgs; [
-        via
-    ];
+    # services.udev.packages = with pkgs; [
+        # via
+    # ];
     systemd.sleep.extraConfig = "HibernateDelaySec=1h";
     services.logind.lidSwitch = "suspend-then-hibernate";
     services.logind.lidSwitchDocked = "ignore";
@@ -205,7 +207,7 @@
         pv
         dislocker
         ntfs3g
-        vial
+        # vial # needed for qmk
         wev
         imv
         gimp
@@ -298,10 +300,12 @@
       };
     };
     programs.java.enable = true;
+    virtualisation.waydroid.enable = true;
     services.undervolt = {
       coreOffset = -90;
       enable = true;
     };
+
 
     nixpkgs.config.allowUnfree = true;
 
