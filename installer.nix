@@ -25,7 +25,7 @@
       pkgs.sbctl
     ];
 
-    system.stateVersion = "23.11";
+    system.stateVersion = "24.05";
     services.getty.autologinUser = lib.mkForce "sam";
 
     boot.swraid.enable = lib.mkForce false;

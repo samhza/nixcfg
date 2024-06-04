@@ -187,6 +187,7 @@
             sha256 = "sha256-dOiQ2SlZuvL+M4I3jF5wLfevlC0/kYYT7979ABDO204=";
           };
         }))
+        keepassxc
         pdfgrep
         poppler_utils
         anki
@@ -324,6 +325,6 @@
 
     hardware.enableRedistributableFirmware = true;
 
-    system.stateVersion = "23.11";
+    system.stateVersion = "24.05";
   };
 }
