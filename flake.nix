@@ -21,6 +21,8 @@
     vscode-server = { url = "github:nix-community/nixos-vscode-server"; inputs."nixpkgs".follows = "nixpkgs"; };
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.3.0";
     nix-gaming.url = "github:fufexan/nix-gaming";
+    nix-minecraft.url = "github:Infinidoge/nix-minecraft";
+    nix-minecraft.inputs.nixpkgs.follows = "nixpkgs";
     site = {
       url = "github:samhza/samhza.com";
       inputs.nixpkgs.follows = "nixpkgs";

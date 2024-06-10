@@ -26,10 +26,11 @@ in
     ../../mixins/musicbot.nix
     ../../mixins/syncthing.nix
     (modulesPath + "/profiles/qemu-guest.nix")
+    inputs.nix-minecraft.nixosModules.minecraft-servers
   ];
   config = {
     networking.firewall = {
-      allowedTCPPorts = [ 80 443 1935 2022 ];
+      allowedTCPPorts = [ 80 443 1935 2022 25565 25566 ];
     };
     services.eternal-terminal.enable = true;
     age.secrets."cloudflare-samhza-com-creds" = {
@@ -247,7 +248,75 @@ in
       };
     };
     systemd.services.ntfy-sh.serviceConfig.RuntimeDirectory = "ntfy-sh";
-    
+
+    age.secrets."healthcheck-id".file = ../../secrets/healthcheck-id.age;
+    systemd.services."healthcheck" = {
+       startAt = "*:*:0/30";
+       serviceConfig = {
+        EnvironmentFile = config.age.secrets."healthcheck-id".path;
+        TimeoutSec = 10;
+        ExecStart = "${pkgs.writeShellScript "healthcheck"
+        ''
+        ${pkgs.curl}/bin/curl \
+          --verbose \
+          -fsS \
+          --retry 2 \
+          --max-time 5 \
+          --ipv4 \
+          https://hc-ping.com/$HEALTHCHECK_ID
+        ''}";
+      };
+    };
+
+    services.minecraft-servers = {
+      enable = true;
+      eula = true;
+    };
+    services.minecraft-servers.servers.for-evan = {
+      enable = true;
+      jvmOpts = "-Xms500M -Xmx2G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true";
+      package = inputs.nix-minecraft.legacyPackages."x86_64-linux".paperServers.paper-1_20_6;
+    };
+    age.secrets."ramiel-restic".file = ../../secrets/ramiel-restic.age;
+    systemd.services."evan-backup" =
+    let
+      rcon = "${pkgs.mcrcon}/bin/mcrcon -p password";
+    in
+    {
+      serviceConfig = {
+        Environment = [
+          "RESTIC_CACHE_DIR=/var/cache/"
+        ];
+        EnvironmentFile = config.age.secrets."ramiel-restic".path;
+        Type = "oneshot";
+        ExecStart = "${pkgs.writeShellScript "evan-backup"
+          ''
+          handle_failure() {
+              echo "say backup failed :/ text sam!" | ${rcon}
+              echo "save-on" | ${rcon}
+              exit "$exit_code"
+          }
+
+          trap 'handle_failure' ERR
+          echo "say Backing shit up rq... may be a little lag" | ${rcon}
+          echo "save-off" | ${rcon}
+          echo "save-all" | ${rcon}
+          ${pkgs.coreutils}/bin/sleep 5
+          ${pkgs.restic}/bin/restic backup /srv/minecraft
+          echo "save-on" | ${rcon}
+          echo "say Backup done! :3" | ${rcon}
+        ''}";
+      };
+    };
+    systemd.timers."evan-backup" = {
+      timerConfig = {
+        Unit = "evan-backup.service";
+        OnCalendar = "hourly";
+        Persistent = "false";
+      };
+      wantedBy = ["timers.target"];
+    };
+
     boot.cleanTmpDir = true;
     zramSwap.enable = true;
     networking.hostName = "ramiel";

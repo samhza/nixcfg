@@ -11,6 +11,8 @@ in
   "esammy.toml.age".publicKeys = [sam lilith ramiel];
   "musicbot-config.txt.age".publicKeys = [sam leliel ramiel];
   "cloudflare-samhza-com-creds.age".publicKeys = [sam ramiel];
+  "ramiel-restic.age".publicKeys = [sam ramiel];
   "iwantmyname-creds.age".publicKeys = [sam ramiel];
   "spotify-password.age".publicKeys = [sam leliel];
+  "healthcheck-id.age".publicKeys = [sam ramiel];
 }
