@@ -87,7 +87,7 @@
     services.logind.lidSwitchDocked = "ignore";
     services.tumbler.enable = true;
     home-manager.users.sam = {pkgs, ...}: {
-      programs.mbsync.enable = true;
+      #programs.mbsync.enable = true;
       programs.msmtp.enable = true;
       services.imapnotify.enable = true;
       accounts.email.accounts.migadu = {
@@ -138,7 +138,6 @@
 
 
       systemd.user.services."logseq-sync" = {
-        
         Unit.Description = "sync logseq ~/knowledge";
         Service = {
           Type = "oneshot";
@@ -160,6 +159,23 @@
           OnBootSec = "1m";
           OnUnitInactiveSec = "1m";
           Unit = "logseq-sync.service";
+        };
+        Install.WantedBy = ["default.target"];
+      };
+
+
+
+      systemd.user.services."neverest" = {
+        Service = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.neverest}/bin/neverest sync";
+        };
+      };
+      systemd.user.timers."neverest" = {
+        Timer = {
+          OnBootSec = "1m";
+          OnUnitInactiveSec = "1m";
+          Unit = "neverest.service";
         };
         Install.WantedBy = ["default.target"];
       };
@@ -226,6 +242,11 @@
         jujutsu
         aerc
         himalaya
+        neverest
+        isync
+        mblaze
+        par
+        lynx
         kakoune
         kak-lsp
         fzf

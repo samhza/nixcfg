@@ -53,10 +53,8 @@ in
       certs."matrix.samhza.com" = certs."samhza.com";
       certs."ntfy.samhza.com" = certs."samhza.com";
       certs."ramiel.samhza.com" = {
-        #figure out how to use inherit w this
-        dnsProvider = "cloudflare";
-        credentialsFile = config.age.secrets."cloudflare-samhza-com-creds".path;
-        domain = "*.ramiel.samhza.com";
+        inherit (certs."samhza.com") dnsProvider credentialsFile;
+        extraDomainNames = [ "*.ramiel.samhza.com" ];
       };
       certs."goresh.it" = certs."samhza.com";
     };
@@ -237,6 +235,7 @@ in
         }
       ];
     };
+
     services.ntfy-sh = {
       enable = true;
       settings = {
@@ -248,6 +247,32 @@ in
       };
     };
     systemd.services.ntfy-sh.serviceConfig.RuntimeDirectory = "ntfy-sh";
+
+    age.secrets."ntfy-netrc".file = ../../secrets/ntfy-netrc.age;
+    systemd.services."failure-handler@" = {
+      description ="failure handler for %i";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.writeShellScript "failure-handler"
+        ''
+          ${pkgs.curl}/bin/curl \
+             --netrc-file ${config.age.secrets."ntfy-netrc".path} \
+             -H "Title: 🔴 $1 FAILED" \
+             --data-binary "''$(systemctl status --output cat $1)" \
+             -X POST https://ntfy.samhza.com/sam
+        ''} %i";
+      };
+    };
+    systemd.packages = [
+      (pkgs.runCommandNoCC "toplevel-overrides.conf" {
+        preferLocalBuild = true;
+        allowSubstitutes = false;
+      } ''
+        mkdir -p $out/etc/systemd/system/service.d/
+        echo "[Unit]" >> $out/etc/systemd/system/service.d/toplevel-overrides.conf
+        echo "OnFailure=failure-handler@%N.service" >> $out/etc/systemd/system/service.d/toplevel-overrides.conf
+      '')
+    ];
 
     age.secrets."healthcheck-id".file = ../../secrets/healthcheck-id.age;
     systemd.services."healthcheck" = {
@@ -275,7 +300,16 @@ in
     services.minecraft-servers.servers.for-evan = {
       enable = true;
       jvmOpts = "-Xms500M -Xmx2G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true";
-      package = inputs.nix-minecraft.legacyPackages."x86_64-linux".paperServers.paper-1_20_6;
+      # package = inputs.nix-minecraft.legacyPackages."x86_64-linux".paperServers.paper-1_20_6;
+      package =
+        let jar = pkgs.fetchurl {
+            url = "file:///home/sam/tmp/spigot-1.21.jar";
+            sha256 = "1ndhyw18rqkwnzri3xavas3h2f51j38rnw0syx7b51p8nmbfmfmd";
+          };
+        in
+          pkgs.writeShellScriptBin "minecraft-server" ''
+            ${pkgs.openjdk21}/bin/java $@ -jar ${jar} nogui
+          '';
     };
     age.secrets."ramiel-restic".file = ../../secrets/ramiel-restic.age;
     systemd.services."evan-backup" =
@@ -292,15 +326,15 @@ in
         ExecStart = "${pkgs.writeShellScript "evan-backup"
           ''
           handle_failure() {
-              echo "say backup failed :/ text sam!" | ${rcon}
-              echo "save-on" | ${rcon}
-              exit "$exit_code"
+              ${rcon} "say backup failed :/ text sam!"
+              ${rcon} "save-on"
+              exit $?
           }
 
           trap 'handle_failure' ERR
-          echo "say Backing shit up rq... may be a little lag" | ${rcon}
-          echo "save-off" | ${rcon}
-          echo "save-all" | ${rcon}
+          ${rcon} "say Backing shit up rq... may be a little lag"
+          ${rcon} "save-off"
+          ${rcon} "save-all"
           ${pkgs.coreutils}/bin/sleep 5
           ${pkgs.restic}/bin/restic backup /srv/minecraft
           echo "save-on" | ${rcon}

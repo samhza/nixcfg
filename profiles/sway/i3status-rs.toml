@@ -13,8 +13,13 @@ action = "play_pause"
 button = "left"
 
 [[block]]
-block = "net"
-format = " $icon {$ssid |}$ip "
+block = "custom"
+command = "echo $(mlist Mail/samhza Mail/rutgers | wc -l) emails"
+interval = 180
+
+#[[block]]
+#block = "net"
+#format = " $icon {$ssid |}$ip "
 [[block]]
 block = "memory"
 format = " $icon $mem_total_used_percents.eng(w:2) "

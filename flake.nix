@@ -46,6 +46,7 @@
       lilith = mkSystem inputs.nixpkgs "x86_64-linux" "lilith";
       leliel = mkSystem inputs.nixpkgs "x86_64-linux" "leliel";
       ramiel = mkSystem inputs.nixpkgs "x86_64-linux" "ramiel";
+      bardiel = mkSystem inputs.nixpkgs "aarch64-linux" "bardiel";
       installer = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [./installer.nix];
