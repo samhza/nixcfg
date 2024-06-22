@@ -23,7 +23,6 @@ in
     ../../mixins/tailscale.nix
     ../../mixins/esammy.nix
     ../../mixins/govanity.nix
-    ../../mixins/musicbot.nix
     ../../mixins/syncthing.nix
     (modulesPath + "/profiles/qemu-guest.nix")
     inputs.nix-minecraft.nixosModules.minecraft-servers

@@ -10,7 +10,6 @@ let
 in
 {
   "esammy.toml.age".publicKeys = [sam lilith ramiel];
-  "musicbot-config.txt.age".publicKeys = [sam leliel ramiel];
   "cloudflare-samhza-com-creds.age".publicKeys = [sam ramiel bardiel];
   "ramiel-restic.age".publicKeys = [sam ramiel];
   "iwantmyname-creds.age".publicKeys = [sam ramiel];
