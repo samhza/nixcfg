@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  modulesPath,
   inputs,
   ...
 }: {
@@ -17,8 +16,9 @@
     ../../mixins/kanata.nix
     ../../mixins/gnupg.nix
     ../../mixins/helix.nix
+    ../../mixins/vscode.nix
     ../../mixins/tailscale.nix
-    ../../mixins/easyeffects.nix
+    # ../../mixins/easyeffects.nix
     ../../mixins/libvirtd.nix
     ../../mixins/libvirt.nix
     ../../mixins/syncthing.nix
@@ -27,6 +27,17 @@
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-6th-gen
   ];
   config = {
+    # networking.networkmanager.wifi.scanRandMacAddress = false;
+    # networking.networkmanager.wifi.backend = "iwd";
+    documentation.dev.enable = true;
+    services.postgresql = {
+      enable = true;
+      ensureDatabases = ["sam"];
+      authentication = pkgs.lib.mkOverride 10 ''
+        #type database  DBuser  auth-method
+        local all       all     trust
+      '';
+    };
     virtualisation.docker.enable = true;
     users.users.sam.extraGroups = [ "docker" ];
     networking = {
@@ -36,7 +47,7 @@
       enable = true;
       settings = {
         START_CHARGE_THRESH_BAT0=50;
-        STOP_CHARGE_THRESH_BAT0=80;
+        STOP_CHARGE_THRESH_BAT0=75;
       };
     };
     virtualisation.libvirtd.enable = true;
@@ -67,30 +78,47 @@
     services.mullvad-vpn.enable = true;
     services.upower.enable = true;
     hardware.bluetooth.enable = true;
-    # doesnt support my fingerprint reader
-    # services.fprintd.enable = true;
     services.gpm.enable = true;
     programs.sway.enable = true;
     programs.dconf.enable = true;
     programs.steam = {
       enable = true;
       extraCompatPackages = [
-        #inputs.nix-gaming.packages.${pkgs.system}.proton-ge
         pkgs.proton-ge-bin
       ];
     };
-    # services.udev.packages = with pkgs; [
-        # via
-    # ];
     systemd.sleep.extraConfig = "HibernateDelaySec=1h";
     services.logind.lidSwitch = "suspend-then-hibernate";
     services.logind.lidSwitchDocked = "ignore";
     services.tumbler.enable = true;
+
+    programs.command-not-found.enable = false;
+    programs.nix-index = {
+      enable = true;
+      enableFishIntegration = true;
+    };
+
     home-manager.users.sam = {pkgs, ...}: {
-      #programs.mbsync.enable = true;
+      programs.mbsync.enable = true;
       programs.msmtp.enable = true;
+      programs.notmuch = {
+          enable = true;
+          hooks.preNew = "${pkgs.notmuch-mailmover}/bin/notmuch-mailmover";
+      };
+      programs.notmuch.search.excludeTags = [ "trash" "spam" ];
+      programs.lieer.enable = true;
+      services.lieer.enable = true;
+      services.mbsync.enable = true;
+      services.mbsync.preExec = "${pkgs.notmuch-mailmover}/bin/notmuch-mailmover";
+      services.mbsync.postExec = "${pkgs.notmuch}/bin/notmuch new";
       services.imapnotify.enable = true;
-      accounts.email.accounts.migadu = {
+      systemd.user.services.imapnotify.Service.Environment = [
+        "PASSWORD_STORE_DIR=$HOME/secrets/password-store"
+      ];
+      accounts.email.maildirBasePath = "Mail";
+      accounts.email.accounts.samhza = {
+        folders.inbox = "";
+        notmuch.enable = true;
         address = "sam@samhza.com";
         userName = "sam@samhza.com";
         imap.host = "imap.migadu.com";
@@ -102,16 +130,77 @@
           subFolders = "Maildir++";
         };
         imapnotify = {
-          # enable = true;
-          onNotify = "${pkgs.isync}/bin/mbsync migadu";
+          enable = true;
+          boxes = [ "INBOX" ];
+          onNotify = "${pkgs.isync}/bin/mbsync samhza";
+          onNotifyPost = "${pkgs.notmuch}/bin/notmuch new && ${pkgs.libnotify}/bin/notify-send 'New mail arrived'";
         };
         msmtp.enable = true;
         realName = "Samuel Hernandez";
-        passwordCommand = "pass show email";
+        passwordCommand = "${pkgs.coreutils}/bin/env PASSWORD_STORE_DIR=/home/sam/secrets/password-store ${pkgs.pass}/bin/pass show email";
       };
+      accounts.email.accounts.rutgers = {
+        folders.inbox = "";
+        notmuch.enable = true;
+        flavor = "gmail.com";
+        address = "samuel.hernandez9@rutgers.edu";
+        userName = "sh1758@scarletmail.rutgers.edu";
+        imap.host = "imap.gmail.com";
+        smtp.host = "smtp.gmail.com";
+        lieer = {
+          enable = true;
+          sync.enable = true;
+          settings.account = "sh1758@scarletmail.rutgers.edu";
+        };
+        imapnotify = {
+          enable = true;
+          boxes = [ "INBOX" ];
+          onNotify = "${pkgs.lieer}/bin/gmi sync -C ~/Mail/rutgers";
+          onNotifyPost = "${pkgs.notmuch}/bin/notmuch new && ${pkgs.libnotify}/bin/notify-send 'New mail arrived'";
+        };
+        msmtp.enable = true;
+        realName = "Samuel Hernandez";
+        passwordCommand = "${pkgs.coreutils}/bin/env PASSWORD_STORE_DIR=/home/sam/secrets/password-store ${pkgs.pass}/bin/pass show rutgers-smtp";
+      };
+
+      services.kanshi.enable = true;
+      services.kanshi.profiles.undocked.outputs = [
+      { criteria = "eDP-1";
+        mode = "2560x1440@60.012Hz";
+        position = "0,0";
+        scale = 1.75; }
+      ];
+      services.kanshi.profiles.docked.outputs = [
+      { criteria = "eDP-1";
+        status = "enable";
+        mode = "2560x1440@60.012Hz";
+        position = "2048,512";
+        scale = 2.00; }
+      { criteria = "HDMI-A-1";
+        status = "enable";
+        mode = "2560x1440@60Hz";
+        position = "0,0";
+        scale = 1.25; }
+      ];
+      /*
+      services.kanshi.profiles."0docked".outputs = [
+      { criteria = "eDP-1";
+        status = "enable";
+        mode = "2560x1440@60.012Hz";
+        position = "0,1225";
+        scale = 1.75; }
+      { criteria = "HDMI-A-1";
+        status = "enable";
+        mode = "2560x1440@60Hz";
+        position = "1462,0";
+        transform = "90";
+        scale = 1.25; }
+      ];
+      */
+
       programs.foot.settings = {
-        # main.font = lib.mkForce "Iosevka Comfy Fixed:size=10";
-        main.font = lib.mkForce "Go Mono:size=10";
+        main.font = lib.mkForce "Iosevka Comfy Fixed:size=10";
+        # main.font = lib.mkForce "Go Mono:size=10";
         colors = {
           foreground = "dcdccc";
           background = "111111";
@@ -137,51 +226,9 @@
       };
 
 
-      systemd.user.services."logseq-sync" = {
-        Unit.Description = "sync logseq ~/knowledge";
-        Service = {
-          Type = "oneshot";
-          Environment = [
-            "PATH=${lib.makeBinPath (with pkgs; [openssh git])}"
-          ];
-          WorkingDirectory = "/home/sam/knowledge";
-          ExecStart = "${pkgs.writeShellScript "logseq-sync"
-            ''
-              #!/bin/sh -eu
-              git pull --ff-only
-              git push
-            ''}";
-        };
-      };
-      systemd.user.timers."logseq-sync" = {
-        Unit.Description = "sync logseq ~/knowledge";
-        Timer = {
-          OnBootSec = "1m";
-          OnUnitInactiveSec = "1m";
-          Unit = "logseq-sync.service";
-        };
-        Install.WantedBy = ["default.target"];
-      };
-
-
-
-      systemd.user.services."neverest" = {
-        Service = {
-          Type = "oneshot";
-          ExecStart = "${pkgs.neverest}/bin/neverest sync";
-        };
-      };
-      systemd.user.timers."neverest" = {
-        Timer = {
-          OnBootSec = "1m";
-          OnUnitInactiveSec = "1m";
-          Unit = "neverest.service";
-        };
-        Install.WantedBy = ["default.target"];
-      };
-
       nixpkgs.config.permittedInsecurePackages = [
         "electron-25.9.0"
+        "electron-28.3.3"
       ];
       home.sessionVariables = {
         EDITOR = "hx";
@@ -193,8 +240,40 @@
         longitude = "-74.0";
         enable = true;
       };
-      home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" ];
+      home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" "$HOME/bin" ];
       home.packages = with pkgs; [
+        mg
+        powertop
+        gnutls
+        (pkgs.texlive.combine {
+          inherit (pkgs.texlive) scheme-basic
+            dvisvgm dvipng # for preview and export as html
+            mylatexformat preview xcolor # for org-latex-preview-process-precompiled
+            wrapfig amsmath ulem hyperref capt-of;
+
+          #(setq org-latex-compiler "lualatex")
+          #(setq org-preview-latex-default-process 'dvisvgm)
+        })
+        racket
+        # (vscode-with-extensions.override {
+        #   vscodeExtensions = with vscode-extensions; [
+        #     continue.continue
+        #   ];
+        # })
+        racket
+        llm
+        sqlite
+        xclip
+        maim
+        slurp
+        picom
+        rofi
+        clang-tools
+        watchman
+        scc
+        ffmpeg
+        (inputs.emacs-overlay.packages."x86_64-linux".emacs-pgtk)
+        man-pages
         (pkgs.vis.overrideAttrs (oa: {
           src = fetchFromGitHub {
             owner = "martanne";
@@ -219,7 +298,6 @@
         rustup
         file
         moreutils
-        vscode
         libreoffice
         pv
         dislocker
@@ -231,8 +309,9 @@
         zip
         strace
       	imagemagick
-        whisper-ctranslate2
-        python311Packages.faster-whisper
+        #whisper-ctranslate2
+        #python311Packages.faster-whisper
+        foliate
         delve
         mupdf
         libtiff
@@ -247,8 +326,6 @@
         mblaze
         par
         lynx
-        kakoune
-        kak-lsp
         fzf
         jq
         gopls
@@ -274,10 +351,17 @@
         vivaldi-ffmpeg-codecs
         xdg-utils
         discord
-        (pkgs.writeShellApplication {
-          name = "logseq";
-          text = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
-        })
+        # logseq
+        # obsidian
+        (pkgs.vesktop.overrideAttrs ({postConfigure ? "", ...} : {
+          postConfigure = postConfigure + ''
+            sed -i '/shiggy.gif/d' ./static/views/splash.html
+          '';
+        }))
+        # (pkgs.logseq.overrideAttrs (oa: {
+        #   version = "idfk";
+        #   src = inputs.logseq;
+        # }))
       ];
       xdg.userDirs = let
         inherit (config.home-manager.users.sam.home) homeDirectory;

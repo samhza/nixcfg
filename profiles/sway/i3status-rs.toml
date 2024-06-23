@@ -14,8 +14,8 @@ button = "left"
 
 [[block]]
 block = "custom"
-command = "echo $(mlist Mail/samhza Mail/rutgers | wc -l) emails"
-interval = 180
+command = "echo $(notmuch search tag:inbox and tag:unread | wc -l) emails"
+interval = 60
 
 #[[block]]
 #block = "net"

@@ -15,6 +15,8 @@
     esammy.flake = false;
     govanity.url = "github:samhza/govanity/trunk";
     govanity.flake = false;
+    logseq.url = "github:logseq/logseq/feat/db";
+    logseq.flake = false;
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     helix.url = "github:helix-editor/helix/23.03";
@@ -23,6 +25,8 @@
     nix-gaming.url = "github:fufexan/nix-gaming";
     nix-minecraft.url = "github:Infinidoge/nix-minecraft";
     nix-minecraft.inputs.nixpkgs.follows = "nixpkgs";
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
+    emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
     site = {
       url = "github:samhza/samhza.com";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,6 +62,7 @@
     devShells.x86_64-linux.default = pkgs.mkShell {
       buildInputs = [
         inputs.agenix.packages.x86_64-linux.agenix
+        pkgs.nil
         pkgs.nix
         pkgs.nixos-rebuild
       ];

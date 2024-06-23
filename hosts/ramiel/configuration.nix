@@ -51,10 +51,11 @@ in
       };
       certs."matrix.samhza.com" = certs."samhza.com";
       certs."ntfy.samhza.com" = certs."samhza.com";
+      certs."b.samhza.com" = certs."samhza.com";
       certs."ramiel.samhza.com" = {
-        inherit (certs."samhza.com") dnsProvider credentialsFile;
+        #inherit (certs."samhza.com") dnsProvider credentialsFile;
         extraDomainNames = [ "*.ramiel.samhza.com" ];
-      };
+      } // certs."samhza.com";
       certs."goresh.it" = certs."samhza.com";
     };
     users.users.nginx.extraGroups = [ "acme" ];
@@ -71,8 +72,40 @@ in
     ];
     security.pam.enableOTPW = true;
 
+    # services.icecast = {
+    #   enable = true;
+    #   hostname = "samhza.com";
+    #   admin.password = "admin";
+    #   extraConf = ''
+
+    #     <mount type="normal">
+    #         <mount-name>/sleep.ogg</mount-name>
+    #         <max-listeners>1</max-listeners>
+    #         <public>1</public>
+    #         <stream-name>Zzzzrgg</stream-name>
+    #         <stream-description>sleep/study mix</stream-description>
+    #         <stream-url>http://some.place.com</stream-url>
+    #         <bitrate>128</bitrate>
+    #         <type>application/ogg</type>
+    #         <subtype>vorbis</subtype>
+    #         <hidden>1</hidden>
+
+    #          <param name="type">basic</param>
+    #          <param name="file">/path/to/playlist</param>
+    #          <param name="random">0</param>
+    #          <param name="once">0</param>
+    #          <param name="restart-after-reread">1</param>
+    #                 </mount>
+    #     <playlist>
+    #   '';
+    # };
+
     services.nginx = {
       enable = true;
+      virtualHosts."_" = {
+        default = true;
+        locations."/".return = "404 ''";
+      };
       virtualHosts."samhza.com" = {
           useACMEHost = "samhza.com";
           forceSSL = true;
@@ -113,6 +146,13 @@ in
         forceSSL = true;
         locations."/" = {
           proxyPass = "http://unix:/run/ntfy-sh/ntfy-sh.sock";
+        };
+      };
+      virtualHosts."b.samhza.com" = {
+        useACMEHost = "b.samhza.com";
+        forceSSL = true;
+        locations."/" = {
+          proxyPass = "http://localhost:8080";
         };
       };
       virtualHosts."goresh.it" = {
@@ -297,7 +337,7 @@ in
       eula = true;
     };
     services.minecraft-servers.servers.for-evan = {
-      enable = true;
+      enable = false;
       jvmOpts = "-Xms500M -Xmx2G -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true";
       # package = inputs.nix-minecraft.legacyPackages."x86_64-linux".paperServers.paper-1_20_6;
       package =
@@ -311,6 +351,24 @@ in
           '';
     };
     age.secrets."ramiel-restic".file = ../../secrets/ramiel-restic.age;
+
+
+    # Enable common container config files in /etc/containers
+    virtualisation = {
+      containers.enable = true;
+      podman = {
+        enable = true;
+        dockerCompat = true;
+        defaultNetwork.settings.dns_enabled = true;
+      };
+    };
+    environment.systemPackages = with pkgs; [
+      dive
+      podman-tui
+      docker-compose
+    ];
+
+    /*
     systemd.services."evan-backup" =
     let
       rcon = "${pkgs.mcrcon}/bin/mcrcon -p password";
@@ -349,7 +407,7 @@ in
       };
       wantedBy = ["timers.target"];
     };
-
+    */
     boot.cleanTmpDir = true;
     zramSwap.enable = true;
     networking.hostName = "ramiel";

@@ -115,17 +115,16 @@ in {
       
       config = rec {
         fonts = {
-          names = ["Go Mono"];
-          # names = ["Iosevka Comfy Fixed"];
+          # names = ["Go Mono"];
+          names = ["Iosevka Comfy Fixed"];
           style = "Regular";
           size = 11.0;
         };
-        output."eDP-1".scale = "1.75";
         bars = [
           {
             fonts = {
-              names = ["Go Mono For Powerline" "Font Awesome 6 Free"];
-              # names = ["Iosevka Comfy Fixed" "Font Awesome 6 Free"];
+              # names = ["Go Mono For Powerline" "Font Awesome 6 Free"];
+              names = ["Iosevka Comfy Fixed" "Font Awesome 6 Free"];
               style = "Regular";
               size = 10.0;
             };
@@ -183,6 +182,7 @@ in {
           "${modifier}+9" = "workspace number 9";
           "${modifier}+0" = "workspace number 10";
           "${modifier}+Tab" = "workspace back_and_forth";
+          "${modifier}+Shift+Tab" = "move workspace to right";
           "${modifier}+Shift+1" = "move container to workspace number 1";
           "${modifier}+Shift+2" = "move container to workspace number 2";
           "${modifier}+Shift+3" = "move container to workspace number 3";

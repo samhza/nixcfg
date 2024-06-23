@@ -14,6 +14,9 @@ in
   "ramiel-restic.age".publicKeys = [sam ramiel];
   "iwantmyname-creds.age".publicKeys = [sam ramiel];
   "spotify-password.age".publicKeys = [sam leliel];
+  "postfix-sender_relay.age".publicKeys = [sam leliel];
+  "migadu-sasl_passwd.age".publicKeys = [sam leliel];
+  "gmail-sasl_passwd.age".publicKeys = [sam leliel];
   "healthcheck-id.age".publicKeys = [sam ramiel];
   "ntfy-netrc.age".publicKeys = [sam ramiel];
 }

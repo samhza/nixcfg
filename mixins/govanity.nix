@@ -20,6 +20,7 @@ let
     Base = "samhza.com";
     SocketPath = "/run/govanity/govanity.sock";
     SocketPerm = "0777";
+    Fallback = "git https://github.com/samhza/%.git";
     Modules = {
       "discord/router" = "git https://github.com/samhza/discordrouter.git";
       "ffmpeg" = "git https://github.com/samhza/go-ffmpeg.git";

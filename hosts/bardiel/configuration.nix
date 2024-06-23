@@ -14,6 +14,8 @@
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
   config = {
+    virtualisation.docker.enable = true;
+    users.users.sam.extraGroups = [ "docker" ];
     networking.firewall = {
       allowedTCPPorts = [ 80 443 1935 2022 25565 25566 ];
     };

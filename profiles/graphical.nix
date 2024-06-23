@@ -63,8 +63,6 @@ in {
         settings = {
           main = {
             term = "xterm-256color";
-            # font = "Iosevka Comfy Fixed:size=14";
-            # dpi-aware = "yes";
           };
         };
       };

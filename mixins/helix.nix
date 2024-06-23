@@ -9,9 +9,9 @@ in
 {
   config = {
     home-manager.users.sam = { pkgs, ... }: {
-      xdg.configFile."helix/languages.toml".source = gen {
-        nix = { auto-format = true; };
-      };
+      # xdg.configFile."helix/languages.toml".source = gen {
+      #   nix = { auto-format = true; };
+      # };
       programs.helix = {
         enable = true;
         package =
@@ -20,7 +20,7 @@ in
           else pkgs.helix;
 
         settings = {
-          theme = "dracula";
+          theme = "gruvbox_dark_hard";
           keys = let
             motion = {
               I = "insert_at_line_start";
@@ -33,34 +33,20 @@ in
               l = "jump_backward";
               L = "jump_forward";
               g = goto;
-              r = {
-                t = "find_till_char";
-              };
-              space = spc;
-              C-w = window;
-              C-3 = window;
-            };
+              x = "extend_to_line_bounds";
+            } // window;
             window = {
-              n="jump_view_down";
-              e="jump_view_up";
-              i="jump_view_right";
-              C-n="jump_view_down";
-              C-e="jump_view_up";
-              C-i="jump_view_right";
-              N="swap_view_down";
-              E="swap_view_up";
-              I="swap_view_left";
-              "'"="vsplit";
-              minus="hsplit";
-            };
-            spc = {
-              "w" = window;
+              "C-n" = "rotate_view";
+              "C-p" = "rotate_view_reverse";
+              "C-'" = "hsplit";
+              "C-w" = "wclose";
+              "A-w" = ":bclose";
+              "C-," = "goto_last_accessed_file";
             };
             goto = {
-              h="goto_line_start";
-              i="goto_line_end";
             };
           in {
+            insert = window;
             normal = {
               n="move_line_down";
               e="move_line_up";
@@ -75,6 +61,7 @@ in
             } // motion;
           };
           editor = {
+            jump-label-alphabet = "arstneiodhwfuy";
             line-number = "relative";
             mouse = true;
             cursorline = true;
