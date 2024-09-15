@@ -31,6 +31,7 @@
         enable = true;
         shellInit = ''
           set fish_greeting
+          set -U Z_CMD "j"
         '';
         shellAliases = {
           gc = "git clone";
@@ -42,6 +43,8 @@
           ns = "nix shell (for prog in $argv; echo \"nixpkgs#$prog\"; end)";
           nsw = "nix shell (for prog in $argv; echo \"weekly#$prog\"; end)";
           nrw = "nix shell (for prog in $argv; echo \"weekly#$prog\"; end)";
+          c = "wl-copy";
+          v = "wl-paste";
         };
         functions = {
           sb.body = "sudo nixos-rebuild build --flake ~/sources/nixcfg#(hostname)";

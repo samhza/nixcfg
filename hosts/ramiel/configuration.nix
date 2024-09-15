@@ -63,15 +63,6 @@ in
       mkdir -p /tmp/{hls,dash}
     '';
 
-    # required for passforios
-    # https://github.com/mssun/passforios/issues/624
-    services.openssh.settings.Macs = [
-      "hmac-sha2-512"
-      "hmac-sha2-256"
-      "umac-128@openssh.com"
-    ];
-    security.pam.enableOTPW = true;
-
     # services.icecast = {
     #   enable = true;
     #   hostname = "samhza.com";

@@ -242,6 +242,8 @@
       };
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" "$HOME/bin" ];
       home.packages = with pkgs; [
+        qbittorrent
+        sshpass
         mg
         powertop
         gnutls
