@@ -66,6 +66,7 @@ in {
       font-awesome
     ];
     home.sessionVariables = {
+      "FREETYPE_PROPERTIES" = "cff:no-stem-darkining=0 autofitter:no-stem-darkening=0";
       "XDG_CURRENT_DESKTOP" = "sway";
       "NIXOS_OZONE_WL" = "1";
     };
@@ -117,8 +118,48 @@ in {
         fonts = {
           # names = ["Go Mono"];
           names = ["Iosevka Comfy Fixed"];
+          #names = [ "CozetteHidpi" ];
+          
           style = "Regular";
-          size = 11.0;
+          size = 11.0; # normally 11 for iosevka
+        };
+        colors ={
+          "focused" = {
+            border = "$mauve";
+            background = "$mauve";
+            text = "$base";
+            indicator = "$rosewater";
+            childBorder = "$mauve";
+          };
+          "focusedInactive" = {
+            border = "$overlay0";
+            background = "$text";
+            text = "$base";
+            indicator = "$rosewater";
+            childBorder = "$overlay0";
+          };
+          "unfocused" = {
+            border = "$overlay0";
+            background = "$base";
+            text = "$text";
+            indicator = "$rosewater";
+            childBorder = "$overlay0";
+          };
+          "urgent" = {
+            border = "$peach";
+            background = "$base";
+            text = "$peach";
+            indicator = "$overlay0";
+            childBorder = "$peach";
+          };
+          "placeholder" = {
+            border = "$overlay0";
+            background = "$base";
+            text = "$text";
+            indicator = "$overlay0";
+            childBorder = "$overlay0";
+          };
+          background = "$base";
         };
         bars = [
           {
@@ -131,12 +172,27 @@ in {
             position = "top";
             statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs";
             colors = {
-              statusline = "#ffffff";
-              background = "#323232FA";
+              background = "$base";
+              statusline = "$text";
               inactiveWorkspace = {
-                background = "#323232FA";
-                border = "#323232";
-                text = "#5c5c5c";
+                border = "$base";
+                background = "$base";
+                text = "$text";
+              };
+              focusedWorkspace = {
+                border = "$base";
+                background = "$mauve";
+                text = "$crust";
+              };
+              activeWorkspace = {
+                border = "$base";
+                background = "$surface2";
+                text = "$text";
+              };
+              urgentWorkspace = {
+                border = "$base";
+                background = "$red";
+                text = "$crust";
               };
             };
           }
@@ -225,10 +281,10 @@ in {
       extraConfig = ''
         exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE NIXOS_OZONE_WL; ${pkgs.systemd}/bin/systemctl --user start sway-session.target"
         exec ${pkgs.swayidle}/bin/swayidle -w \
-        	timeout 300 '${pkgs.swaylock}/bin/swaylock -f -c 000000' \
+        	timeout 300 '${pkgs.swaylock}/bin/swaylock -f' \
         	timeout 600 'swaymsg "output * dpms off"' \
         	resume 'swaymsg "output * dpms on"' \
-        	before-sleep '${pkgs.swaylock}/bin/swaylock -f -c 000000'
+        	before-sleep '${pkgs.swaylock}/bin/swaylock -f'
         exec ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
 
         #set $mod Alt
@@ -279,7 +335,7 @@ in {
         bindsym Shift+Print exec ${pkgs.grim}/bin/grim -g "$(${sel}/bin/sel)" - | tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s.png') | wl-copy
         bindsym Ctrl+Print exec ${pkgs.grim}/bin/grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')" - |tee $(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)/screenshots/$(date +'%s.png') | wl-copy
 
-        bindsym $mod+l exec ${pkgs.swaylock}/bin/swaylock -c 070D0D
+        bindsym $mod+l exec ${pkgs.swaylock}/bin/swaylock
 
         exec ${pkgs.mako}/bin/mako >/tmp/mako.log 2>&1
         exec_always kanshi >/tmp/kanshi.log 2>&1

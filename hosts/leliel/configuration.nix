@@ -11,6 +11,8 @@
     ../../profiles/network.nix
     ../../profiles/graphical.nix
     ../../profiles/sway
+    # ../../profiles/gnome
+    # ../../profiles/kde
     ../../mixins/pipewire.nix
     ../../mixins/gtk.nix
     ../../mixins/kanata.nix
@@ -18,13 +20,15 @@
     ../../mixins/helix.nix
     ../../mixins/vscode.nix
     ../../mixins/tailscale.nix
-    # ../../mixins/easyeffects.nix
+    ../../mixins/easyeffects.nix
     ../../mixins/libvirtd.nix
     ../../mixins/libvirt.nix
     ../../mixins/syncthing.nix
+    ../../mixins/activitywatch.nix
     ./hardware-configuration.nix
 
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-6th-gen
+    inputs.catppuccin.nixosModules.catppuccin
   ];
   config = {
     # networking.networkmanager.wifi.scanRandMacAddress = false;
@@ -79,7 +83,8 @@
     services.upower.enable = true;
     hardware.bluetooth.enable = true;
     services.gpm.enable = true;
-    programs.sway.enable = true;
+    # programs.sway.enable = true;
+
     programs.dconf.enable = true;
     programs.steam = {
       enable = true;
@@ -88,6 +93,7 @@
       ];
     };
     systemd.sleep.extraConfig = "HibernateDelaySec=1h";
+    # services.logind.lidSwitch = "ignore";
     services.logind.lidSwitch = "suspend-then-hibernate";
     services.logind.lidSwitchDocked = "ignore";
     services.tumbler.enable = true;
@@ -98,7 +104,40 @@
       enableFishIntegration = true;
     };
 
+
     home-manager.users.sam = {pkgs, ...}: {
+      imports = [
+        inputs.catppuccin.homeManagerModules.catppuccin
+        inputs.spicetify-nix.homeManagerModules.default
+      ];
+
+      programs.spicetify =
+        let
+          spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
+        in
+          {
+            enable = true;
+            enabledExtensions = with spicePkgs.extensions; [
+              adblock
+              hidePodcasts
+              shuffle # shuffle+ (special characters are sanitized out of extension names)
+            ];
+            theme = spicePkgs.themes.catppuccin;
+            colorScheme = "mocha";
+          };
+
+      
+      catppuccin.enable = true;
+      qt = {
+        enable = true;
+        style.catppuccin.enable = true;
+        style.name = "kvantum";
+        platformTheme.name = "kvantum";
+      };
+      programs.fzf.enable = true;
+      programs.fzf.catppuccin.enable = true;
+      
+      programs.tmux.enable = true;
       programs.mbsync.enable = true;
       programs.msmtp.enable = true;
       programs.notmuch = {
@@ -168,7 +207,7 @@
       { criteria = "eDP-1";
         mode = "2560x1440@60.012Hz";
         position = "0,0";
-        scale = 1.75; }
+        scale = 1.25; }
       ];
       services.kanshi.profiles.docked.outputs = [
       { criteria = "eDP-1";
@@ -197,8 +236,25 @@
         scale = 1.25; }
       ];
       */
-
+      programs.fish.enable = true;
+      programs.fish.catppuccin.enable = true;
+      wayland.windowManager.sway.catppuccin.enable = true;
+      programs.kitty = {
+        enable = true;
+        font.name = "IosevkaComfyFixed";
+        font.size = 10;
+        shellIntegration.enableFishIntegration = true;
+        settings = {
+          tab_bar_style = "powerline";
+          wayland_titlebar_color = "background";
+        };
+        keybindings = {
+          "alt+o" = "next_window";
+          "alt+shift+o" = "prev_window";
+        };
+      };
       programs.foot.settings = {
+        # main.font = lib.mkForce "CozetteHidpi:size=11";
         main.font = lib.mkForce "Iosevka Comfy Fixed:size=10";
         # main.font = lib.mkForce "Go Mono:size=10";
         colors = {
@@ -242,6 +298,12 @@
       };
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" "$HOME/bin" ];
       home.packages = with pkgs; [
+        cozette
+        gdu
+        rlwrap
+        zotero
+        gnumake
+        wakatime
         qbittorrent
         sshpass
         mg
@@ -322,13 +384,13 @@
         backblaze-b2
         jujutsu
         aerc
-        himalaya
-        neverest
+        # himalaya
+        # neverest
         isync
         mblaze
         par
         lynx
-        fzf
+        #fzf
         jq
         gopls
         gotools
@@ -343,7 +405,7 @@
         go
         rclone
         chromium
-        spotify
+        # spotify # handled by spicetify
         appimage-run
         apple-cursor
         # (pkgs.callPackage ../../pkgs/beeper-desktop.nix {} )
@@ -352,14 +414,9 @@
         })
         vivaldi-ffmpeg-codecs
         xdg-utils
-        discord
+        # discord
         # logseq
         # obsidian
-        (pkgs.vesktop.overrideAttrs ({postConfigure ? "", ...} : {
-          postConfigure = postConfigure + ''
-            sed -i '/shiggy.gif/d' ./static/views/splash.html
-          '';
-        }))
         # (pkgs.logseq.overrideAttrs (oa: {
         #   version = "idfk";
         #   src = inputs.logseq;
@@ -379,6 +436,7 @@
         templates = "${configHome}/templates";
         videos = "${homeDirectory}/videos";
       };
+      
       programs.gh.enable = true;
       programs.gh.settings.version = 1;
       programs.git = {

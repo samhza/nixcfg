@@ -42,27 +42,33 @@ in {
         noto-fonts-cjk
         corefonts
       ];
-      gtk = {
-        theme.package = pkgs.arc-theme;
-        theme.name = "Arc-dark";
-        enable = true;
-        gtk3.extraConfig = {
-          gtk-application-prefer-dark-theme = 1;
-          gtk-xft-hinting = 1;
-          gtk-xft-hintstyle = "slight";
-          gtk-xft-antialias = 1; # => font-antialiasing="grayscale"
-          gtk-xft-rgba = "rgb"; # => font-rgb-order="rgb"
-        };
-        font = {
-          package = pkgs.noto-fonts;
-          name = "Noto Sans 11";
-        };
-      };
+      # gtk = {
+      #   theme.package = pkgs.arc-theme;
+      #   theme.name = "Arc-dark";
+      #   enable = true;
+      #   gtk3.extraConfig = {
+      #     gtk-application-prefer-dark-theme = 1;
+      #     gtk-xft-hinting = 1;
+      #     gtk-xft-hintstyle = "slight";
+      #     gtk-xft-antialias = 1; # => font-antialiasing="grayscale"
+      #     gtk-xft-rgba = "rgb"; # => font-rgb-order="rgb"
+      #   };
+      #   font = {
+      #     package = pkgs.noto-fonts;
+      #     name = "Noto Sans 11";
+      #   };
+      # };
       programs.foot = {
         enable = true;
         settings = {
           main = {
-            term = "xterm-256color";
+            # term = "xterm-256color";
+          };
+          key-bindings = {
+            prompt-next = "Control+Shift+n";
+            prompt-prev = "Control+Shift+p";
+            spawn-terminal = "Control+Shift+Return";
+            "pipe-command-output" = "[wl-copy] Control+Return";
           };
         };
       };

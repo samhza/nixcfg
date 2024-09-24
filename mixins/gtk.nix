@@ -4,12 +4,12 @@
   config = {
     home-manager.users.sam = { pkgs, ... }@hm: {
       gtk = {
-        enable = true;
-#        font = prefs.gtk.font;
-#        theme = prefs.gtk.theme;
-        # theme = { name = "Arc-Dark"; package = pkgs.arc-theme; };
-#        iconTheme = prefs.gtk.iconTheme;
-        cursorTheme = {name = "macOS-BigSur-White"; package = pkgs.apple-cursor;};
+        enable = false;
+        # font = prefs.gtk.font;
+        # theme = prefs.gtk.theme;
+        theme = { name = "Arc-Dark"; package = pkgs.arc-theme; };
+        # iconTheme = prefs.gtk.iconTheme;
+        cursorTheme = {name = "macOS-BigSur-White"; package = pkgs.apple_cursor;};
         gtk2.configLocation = "${hm.config.xdg.configHome}/gtk-2.0/gtkrc";
         gtk3.extraConfig = {
           gtk-application-prefer-dark-theme = 1;

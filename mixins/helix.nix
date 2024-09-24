@@ -20,7 +20,7 @@ in
           else pkgs.helix;
 
         settings = {
-          theme = "gruvbox_dark_hard";
+          # theme = "gruvbox_dark_hard";
           keys = let
             motion = {
               I = "insert_at_line_start";

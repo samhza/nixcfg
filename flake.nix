@@ -11,6 +11,8 @@
     jj.url = "github:martinvonz/jj";
     # nix-matlab.url = "gitlab:doronbehar/nix-matlab";
     # nix-matlab.inputs.nixpkgs.follows = "nixpkgs";
+    spicetify-nix.url = "github:Gerg-L/spicetify-nix";
+    spicetify-nix.inputs.nixpkgs.follows = "nixpkgs";
     esammy.url = "github:samhza/esammy/trunk";
     esammy.flake = false;
     govanity.url = "github:samhza/govanity/trunk";
@@ -27,6 +29,7 @@
     nix-minecraft.inputs.nixpkgs.follows = "nixpkgs";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
+    catppuccin.url = "github:catppuccin/nix";
     site = {
       url = "github:samhza/samhza.com";
       inputs.nixpkgs.follows = "nixpkgs";

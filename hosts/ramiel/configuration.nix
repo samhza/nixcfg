@@ -182,15 +182,18 @@ in
       '';
     };
 
+    age.secrets."dendrite-shared-secret".file = ../../secrets/dendrite-shared-secret.age;
     services.dendrite = {
       enable = true;
+      environmentFile = config.age.secrets."dendrite-shared-secret".path;
       settings.global = {
         server_name = "samhza.com";
         disable_federation = false;
         private_key = "/$CREDENTIALS_DIRECTORY/matrix_key.pem";
       };
       settings = {
-         logging = [
+        client_api.registration_shared_secret = "$REGISTRATION_SHARED_SECRET";
+        logging = [
           {
             type = "std";
             level = "warn";

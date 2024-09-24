@@ -19,4 +19,5 @@ in
   "gmail-sasl_passwd.age".publicKeys = [sam leliel];
   "healthcheck-id.age".publicKeys = [sam ramiel];
   "ntfy-netrc.age".publicKeys = [sam ramiel];
+  "dendrite-shared-secret.age".publicKeys = [sam ramiel];
 }
