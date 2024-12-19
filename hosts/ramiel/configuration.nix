@@ -151,35 +151,7 @@ in
           locations."= /" = {
             return = "302 https://goreshit.bandcamp.com/";
           };
-          locations."= /live" = {
-            extraConfig = ''
-               types { } default_type "text/html; charset=utf-8";
-            '';
-            alias = ./cheers.html;
-          };
-          locations."/dash" = {
-            extraConfig = ''
-              autoindex on;
-            '';
-            root = "/tmp";
-          };
       };
-      appendConfig = ''
-        rtmp {
-            server {
-                chunk_size 4096;
-                listen 1935; 
-                application live {
-                    allow publish 173.2.161.197;
-                    live on;
-                    record off;
-                    dash on; 
-                    dash_playlist_length 30s;
-                    dash_path /tmp/dash;
-                }
-            } 
-        }
-      '';
     };
 
     age.secrets."dendrite-shared-secret".file = ../../secrets/dendrite-shared-secret.age;

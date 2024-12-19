@@ -20,12 +20,6 @@
       ];
       programs.ssh = {
         enable = true;
-        matchBlocks.jascha = {
-          hostname = "doorcraft.de";
-          port = 44303;
-        };
-        matchBlocks.dm4.hostname = "balls.dm4uz3.pt";
-        matchBlocks.ramiel.hostname = "5.161.55.25";
       };
       programs.fish = {
         enable = true;
