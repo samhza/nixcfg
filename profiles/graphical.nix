@@ -36,10 +36,10 @@ in {
         go-font
         powerline-fonts
         wl-clipboard
-        gnome3.adwaita-icon-theme
+        adwaita-icon-theme
         noto-fonts
         noto-fonts-emoji
-        noto-fonts-cjk
+        noto-fonts-cjk-sans
         corefonts
       ];
       # gtk = {

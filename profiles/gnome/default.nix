@@ -20,7 +20,7 @@
       desktopManager.gnome.enable = true;
     };
     environment.systemPackages = [
-      pkgs.gnome3.adwaita-icon-theme
+      pkgs.adwaita-icon-theme
     ];
     environment.gnome.excludePackages = (with pkgs; [
       gnome-photos

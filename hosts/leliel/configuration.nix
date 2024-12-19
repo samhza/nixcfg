@@ -135,6 +135,7 @@
         platformTheme.name = "kvantum";
       };
       programs.fzf.enable = true;
+      programs.fzf.enableFishIntegration = false;
       programs.fzf.catppuccin.enable = true;
       
       programs.tmux.enable = true;
@@ -298,6 +299,7 @@
       };
       home.sessionPath = [ "$HOME/go/bin" "$HOME/.cargo/bin" "$HOME/bin" ];
       home.packages = with pkgs; [
+        perl # needed for fish's fzf ctrl-r to not be slow
         cozette
         gdu
         rlwrap
@@ -325,7 +327,7 @@
         #   ];
         # })
         racket
-        llm
+        # llm # todo not building right
         sqlite
         xclip
         maim
@@ -490,6 +492,6 @@
 
     hardware.enableRedistributableFirmware = true;
 
-    system.stateVersion = "24.05";
+    system.stateVersion = "24.11";
   };
 }

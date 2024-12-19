@@ -54,6 +54,6 @@
     boot.loader.efi.canTouchEfiVariables = true;
     boot.initrd.availableKernelModules = [ "xhci_pci" "virtio_scsi" ];
     boot.initrd.kernelModules = [ "nvme" ];
-    system.stateVersion = "24.05";
+    system.stateVersion = "24.11";
   };
 }
